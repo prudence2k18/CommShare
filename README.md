@@ -1,0 +1,1 @@
+HomeScreen-> Listed estates that the user has been added to.
