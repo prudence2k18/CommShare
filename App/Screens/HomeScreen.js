@@ -100,10 +100,9 @@ export function HomeScreen({ navigation }) {
             />
           </View>
 
-          {/* Side Menu */}
           <Modal visible={menuVisible} animationType="slide">
             <View style={styles.sideMenu}>
-              {/* Close Icon */}
+
               <TouchableOpacity
                 onPress={toggleMenuVisable}
                 style={styles.closeIcon}
@@ -117,15 +116,15 @@ export function HomeScreen({ navigation }) {
                 "CreateEstate",
                 "EditProfile",
                 "DeleteAccount",
-              ].map((label, index) => (
+              ].map((screen, index) => (
                 <TouchableOpacity
                   key={index}
                   style={styles.menuItem}
                   onPress={() => {
-                    navigation.navigate(label) || setMenuVisible(false);
+                    navigation.navigate(screen) || setMenuVisible(false);
                   }}
                 >
-                  <Text style={styles.menuText}>{label}</Text>
+                  <Text style={styles.menuText}>{screen}</Text>
                 </TouchableOpacity>
               ))}
             </View>

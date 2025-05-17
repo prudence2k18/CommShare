@@ -5,26 +5,19 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image,
-  SafeAreaView,
-  ScrollView,
-  ImageBackground,
   Alert,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
-import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+  ScrollView,
+} from "react-native"
 import { Theme } from "../Components/Theme";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 export function CreateEstate({ navigation }) {
   const [estateName, setEstateName] = useState("");
-  const [location, setLocation] = useState("");
-  const [email, setEmail] = useState("");
-  const [mobile, setMobile] = useState("");
+  const [location, setLocation] = useState("")
   const [description, setDescription] = useState("");
 
   const handleCreateEstate = () => {
-    if (!estateName || !location || !email || !mobile) {
+    if (!estateName || !location) {
       Alert.alert("Missing Info", "Please fill in all required fields.");
       return;
     }
@@ -32,239 +25,89 @@ export function CreateEstate({ navigation }) {
     Alert.alert("Success", "Estate created successfully.");
     setEstateName("");
     setLocation("");
-    setEmail("");
-    setMobile("");
     setDescription("");
     navigation.goBack();
   };
 
-  const TopBackGround_URI =
-    "https://images.pexels.com/photos/517883/pexels-photo-517883.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
-
-  const profilePicUri =
-    "http://thispix.com/wp-content/uploads/2015/06/passport-010.jpg";
-
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f8f8f8" }}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-          <ImageBackground
-            source={{ uri: TopBackGround_URI }}
-            style={styles.header}
-          >
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.backIcon}
-            >
-              <Icon name="arrow-left" size={24} color="#333" />
-            </TouchableOpacity>
+    <ScrollView contentContainerStyle={styles.container}>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <Icon name="arrow-left" size={24} color="#333" />
+      </TouchableOpacity>
+      <Text style={styles.header}>Create New Estate Group</Text>
 
-            <Image source={{ uri: profilePicUri }} style={styles.profilePic} />
-            <TouchableOpacity
-              style={styles.editIcon}
-              onPress={() => navigation.navigate("EditProfile")}
-            >
-              <Icon name="pencil" size={18} color="#fff" />
-            </TouchableOpacity>
-            <Text style={styles.userName}>Lacey Fernandez</Text>
-          </ImageBackground>
+      <Text style={styles.label}>Estate Name *</Text>
+      <TextInput
+        style={styles.input}
+        value={estateName}
+        onChangeText={setEstateName}
+        placeholder="e.g., Sunrise Villas"
+      />
 
-          <View style={styles.formCard}>
-            <Text style={styles.cardTitle}>Create New Estate Group</Text>
+      <Text style={styles.label}>Location *</Text>
+      <TextInput
+        style={styles.input}
+        value={location}
+        onChangeText={setLocation}
+        placeholder="e.g., Lagos, Nigeria"
+      />
 
-            <View style={styles.inputContainer}>
-              <Icon
-                name="home-city-outline"
-                size={Theme.sizes.icon.md}
-                color="#555"
-                style={styles.inputIcon}
-              />
-              <TextInput
-                placeholder="Estate Name *"
-                value={estateName}
-                onChangeText={setEstateName}
-                placeholderTextColor="#888"
-                style={[styles.input, styles.inputText]}
-              />
-            </View>
+      <Text style={styles.label}>Description</Text>
+      <TextInput
+        style={[styles.input, styles.textArea]}
+        value={description}
+        onChangeText={setDescription}
+        placeholder="Optional details about the estate"
+        multiline
+        numberOfLines={4}
+      />
 
-            <View style={styles.inputContainer}>
-              <Icon
-                name="map-marker-outline"
-                size={Theme.sizes.icon.md}
-                color="#555"
-                style={styles.inputIcon}
-              />
-              <TextInput
-                placeholder="Location *"
-                value={location}
-                onChangeText={setLocation}
-                placeholderTextColor="#888"
-                style={[styles.input, styles.inputText]}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Icon
-                name="email-outline"
-                size={Theme.sizes.icon.md}
-                color="#555"
-                style={styles.inputIcon}
-              />
-              <TextInput
-                placeholder="Enter Email *"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                placeholderTextColor="#888"
-                style={[styles.input, styles.inputText]}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Icon
-                name="phone-outline"
-                size={Theme.sizes.icon.md}
-                color="#555"
-                style={styles.inputIcon}
-              />
-              <TextInput
-                placeholder="Enter your mobile number *"
-                value={mobile}
-                onChangeText={setMobile}
-                keyboardType="phone-pad"
-                placeholderTextColor="#888"
-                style={[styles.input, styles.inputText]}
-              />
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Icon
-                name="file-document-outline"
-                size={Theme.sizes.icon.md}
-                color="#555"
-                style={styles.inputIcon}
-              />
-              <TextInput
-                placeholder="Optional details about the estate"
-                value={description}
-                onChangeText={setDescription}
-                multiline
-                numberOfLines={4}
-                placeholderTextColor="#888"
-                style={[styles.input, styles.multilineInput]}
-              />
-            </View>
-
-            <TouchableOpacity
-              style={styles.saveButton}
-              onPress={handleCreateEstate}
-            >
-              <Text style={styles.saveButtonText}>SAVE</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      <TouchableOpacity style={styles.button} onPress={handleCreateEstate}>
+        <Text style={styles.buttonText}>Create Estate</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+    backgroundColor: "#fff",
+    flexGrow: 1,
+  },
   header: {
-    height: 270,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingTop: 30,
-  },
-  backIcon: {
-    position: "absolute",
-    top: 30,
-    left: 20,
-    padding: 10,
-  },
-  profilePic: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 3,
-    borderColor: "#fff",
-  },
-  editIcon: {
-    position: "absolute",
-    top: 80,
-    right: 130,
-    backgroundColor: Theme.colors.yellow,
-    borderRadius: 20,
-    padding: 6,
-    elevation: 3,
-  },
-  userName: {
-    marginTop: 10,
-    fontSize: 18,
+    fontSize: Theme.sizes.xxl,
     fontFamily: Theme.fonts.text700,
-    color: "#fff",
-  },
-  formCard: {
-  backgroundColor: "#fff",
-  marginHorizontal: 20,
-  marginTop: -40, // move it up to overlap the image
-  padding: 25,
-  borderRadius: 12,
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 3 },
-  shadowOpacity: 0.1,
-  shadowRadius: 6,
-  elevation: 6,
-  zIndex: 2, // ensure it appears above the image
-},
-
-  cardTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-    textAlign: "center",
-    marginBottom: 25,
     color: Theme.colors.primary,
+    marginBottom: 20,
+    textAlign: "center",
   },
-  inputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fafafa",
-    borderColor: "#ccc",
+  label: {
+    fontSize: Theme.sizes.md,
+    fontWeight: "600",
+    marginBottom: 5,
+  },
+  input: {
     borderWidth: 1,
-    borderRadius: 6,
-    paddingHorizontal: 15,
-    marginBottom: 18,
-    minHeight: 40,
-  },
-  inputIcon: {
-    marginRight: 12,
-  },
-  inputText: {
-    fontFamily: Theme.fonts.text400,
-  },
-  multilineInput: {
-    flex: 1,
+    borderColor: "#ccc",
+    borderRadius: 10,
+    padding: 10,
+    marginBottom: 15,
     fontSize: 16,
-    color: "#333",
-    paddingVertical: 8,
-    minHeight: 90,
+  },
+  textArea: {
+    height: 100,
     textAlignVertical: "top",
-    fontFamily: Theme.fonts.text400,
   },
-  saveButton: {
+  button: {
     backgroundColor: Theme.colors.primary,
-    paddingVertical: 11,
-    borderRadius: 8,
+    padding: 15,
+    borderRadius: 10,
     alignItems: "center",
-    marginTop: 5,
   },
-  saveButtonText: {
+  buttonText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: Theme.sizes.md,
     fontFamily: Theme.fonts.text700,
   },
 });
