@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { Theme } from "../Components/Theme";
 
 export function DashBoard({navigation}) {
 
@@ -10,7 +11,7 @@ export function DashBoard({navigation}) {
     <View style={styles.container}>
       {/* Back Button */}
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backIcon}>
-        <Icon name="arrow-left" size={24} color="#333" />
+        <Icon name="arrow-left" size={Theme.sizes.icon.md} color="#333" />
       </TouchableOpacity>
 
       <Text style={styles.title}>DashBoard</Text>
@@ -31,7 +32,6 @@ const styles = StyleSheet.create({
     top: 30,
     left: 20,
     padding: 10,
-    zIndex: 1,
   },
   title: {
     fontSize: 28,

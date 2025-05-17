@@ -20,9 +20,9 @@ import Modal from "react-native-modal";
 export function HomeScreen({ navigation }) {
   // const navigation = useNavigation();
   const [menuVisible, setMenuVisible] = useState(false);
-  const BACKGROUND_URI =
+  const BackgroundImg =
     "https://img2.joyreactor.com/pics/post/photo-village-night-805292.jpeg";
-  const HEADER_IMAGE_URI =
+  const HeaderImg =
     "https://static.vecteezy.com/system/resources/thumbnails/021/379/802/small_2x/circle-of-houses-figures-build-buy-or-sell-real-estate-construction-project-buildings-and-architecture-housing-and-urbanization-real-estate-market-eco-friendly-community-of-homeowners-photo.jpg";
 
   const estates = [
@@ -37,13 +37,13 @@ export function HomeScreen({ navigation }) {
 
   return (
     <ImageBackground
-      source={{ uri: BACKGROUND_URI }}
+      source={{ uri: BackgroundImg }}
       style={styles.fullScreenBackground}
       resizeMode="cover"
     >
       <SafeAreaView style={{ flex: 1 }}>
         <ImageBackground
-          source={{ uri: HEADER_IMAGE_URI }}
+          source={{ uri: HeaderImg }}
           style={styles.headerImage}
           resizeMode="cover"
         >
@@ -51,11 +51,11 @@ export function HomeScreen({ navigation }) {
             onPress={() => navigation.navigate("Intro")}
             style={styles.backIcon}
           >
-            <Icon name="arrow-left" size={24} color="#fff" />
+            <Icon name="arrow-left" size={Theme.sizes.icon.md} color="#fff" />
           </TouchableOpacity>
 
           <TouchableOpacity onPress={toggleMenuVisable} style={styles.menuIcon}>
-            <Icon name="bars" size={24} color={Theme.colors.gray} />
+            <Icon name="bars" size={Theme.sizes.icon.md} color={Theme.colors.gray} />
           </TouchableOpacity>
 
           <View
@@ -195,11 +195,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#333",
     fontWeight: "600",
+    fontFamily: Theme.fonts.text400,
   },
   subtitle: {
     fontSize: 16,
     color: "#555",
     marginTop: 5,
+    fontFamily: Theme.fonts.text400,
   },
   bodyContent: {
     flex: 1,
@@ -223,6 +225,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   sideMenu: {
+    flex: 1,
     width: "100%",
     backgroundColor: Theme.colors.bg,
     paddingTop: 60,
@@ -241,6 +244,7 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: 18,
     color: "#333",
+    fontFamily: Theme.fonts.text400,
   },
   closeIcon: {
   position: 'absolute',

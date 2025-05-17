@@ -31,7 +31,6 @@ const styles = StyleSheet.create({
     top: 30,
     left: 20,
     padding: 10,
-    zIndex: 1,
   },
   title: {
     fontSize: 28,
