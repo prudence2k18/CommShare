@@ -67,6 +67,7 @@ export function HomeScreen({ navigation }) {
               backgroundColor: "#00000040",
             }}
           >
+
             <Text style={[styles.imageTitle, { color: Theme.colors.primary }]}>
               Welcome to
               <Text
@@ -76,7 +77,7 @@ export function HomeScreen({ navigation }) {
                   fontSize: Theme.sizes.xxl,
                 }}
               >
-                {" "}
+                {"  "}
                 CommShare
               </Text>
             </Text>
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    overflow: "hidden",
+    overflow: "hidden",  //*/////////////
   },
   headerName: {
     fontSize: 31,

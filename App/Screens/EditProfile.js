@@ -23,11 +23,11 @@ export function EditProfile({ navigation }) {
   const [mobile, setMobile] = useState("");
   const [dob, setDob] = useState("");
   const [bio, setBio] = useState("");
-  const [isMale, setIsMale] = useState(false);
-  const [isFemale, setIsFemale] = useState(false);
+  const [isYes, setIsYes] = useState(false);
+  const [isNo, setIsNo] = useState(false);
 
   const handleEditProfile = () => {
-    if (!username || !email || (!isMale && !isFemale)) {
+    if (!username || !email || (!isYes && !isNo)) {
       Alert.alert("Missing Info", "Please fill in all required fields.");
       return;
     }
@@ -37,7 +37,7 @@ export function EditProfile({ navigation }) {
     setEmail("");
     setMobile("");
     setDob("");
-    // setBio("");
+    setBio("");
     navigation.goBack();
   };
 
@@ -147,22 +147,22 @@ export function EditProfile({ navigation }) {
               />
             </View>
 
-            <Text style={styles.label}>Sex</Text>
+            <Text style={styles.label}>Let others see your mobile number ?</Text>
             <View style={styles.toggleRow}>
-              <Text style={styles.genderLabel}>Male</Text>
+              <Text style={styles.genderLabel}>Yes</Text>
               <Switch
-                value={isMale}
+                value={isYes}
                 onValueChange={(val) => {
-                  setIsMale(val);
-                  if (val) setIsFemale(false);
+                  setIsYes(val);
+                  if (val) setIsNo(false);
                 }}
               />
-              <Text style={styles.genderLabel}>Female</Text>
+              <Text style={styles.genderLabel}>No</Text>
               <Switch
-                value={isFemale}
+                value={isNo}
                 onValueChange={(val) => {
-                  setIsFemale(val);
-                  if (val) setIsMale(false);
+                  setIsNo(val);
+                  if (val) setIsYes(false);
                 }}
               />
             </View>
