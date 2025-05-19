@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import {
   View,
   Text,
+  TextInput,
   FlatList,
   TouchableOpacity,
   StyleSheet,
   Animated,
   StatusBar,
   ImageBackground,
+  KeyboardAvoidingView,
   SafeAreaView,
   ScrollView,
   Platform,
@@ -25,114 +27,141 @@ export function HomeScreen({ navigation }) {
   const HeaderImg =
     "https://static.vecteezy.com/system/resources/thumbnails/021/379/802/small_2x/circle-of-houses-figures-build-buy-or-sell-real-estate-construction-project-buildings-and-architecture-housing-and-urbanization-real-estate-market-eco-friendly-community-of-homeowners-photo.jpg";
 
-  const estates = [
+  const [search, setSearch] = useState("");
+  const [estates, setEstates] = useState([
     { id: 1, name: "Sunset Villas", location: "California" },
     { id: 2, name: "Palm Heights", location: "Florida" },
     { id: 3, name: "Maple Residences", location: "Toronto" },
-  ];
+  ]);
+
+  const filteredEstates = estates.filter((estate) =>
+    estate.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   const toggleMenuVisable = () => {
     setMenuVisible(!menuVisible);
   };
 
   return (
-    <ImageBackground
-      source={{ uri: BackgroundImg }}
-      style={styles.fullScreenBackground}
-      resizeMode="cover"
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <SafeAreaView style={{ flex: 1 }}>
-        <ImageBackground
-          source={{ uri: HeaderImg }}
-          style={styles.headerImage}
-          resizeMode="cover"
-        >
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Intro")}
-            style={styles.backIcon}
+      <ImageBackground
+        source={{ uri: BackgroundImg }}
+        style={styles.fullScreenBackground}
+        resizeMode="cover"
+      >
+        <SafeAreaView style={{ flex: 1 }}>
+          <ImageBackground
+            source={{ uri: HeaderImg }}
+            style={styles.headerImage}
+            resizeMode="cover"
           >
-            <Icon name="arrow-left" size={Theme.sizes.icon.md} color="#fff" />
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Intro")}
+              style={styles.backIcon}
+            >
+              <Icon name="arrow-left" size={Theme.sizes.icon.md} color="#fff" />
+            </TouchableOpacity>
 
-          <TouchableOpacity onPress={toggleMenuVisable} style={styles.menuIcon}>
-            <Icon name="bars" size={Theme.sizes.icon.md} color={Theme.colors.gray} />
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={toggleMenuVisable}
+              style={styles.menuIcon}
+            >
+              <Icon
+                name="bars"
+                size={Theme.sizes.icon.md}
+                color={Theme.colors.yellow}
+              />
+            </TouchableOpacity>
 
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "flex-end",
-              justifyContent: "space-evenly",
-              paddingBottom: 10,
-              backgroundColor: "#00000040",
-            }}
-          >
-
-            <Text style={[styles.imageTitle, { color: Theme.colors.primary }]}>
-              Welcome to
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "flex-end",
+                justifyContent: "space-evenly",
+                paddingBottom: 10,
+                backgroundColor: "#00000040",
+              }}
+            >
               <Text
-                style={{
-                  fontFamily: Theme.fonts.brand,
-                  color: Theme.colors.yellow,
-                  fontSize: Theme.sizes.xxl,
-                }}
+                style={[styles.imageTitle, { color: Theme.colors.primary }]}
               >
-                {"  "}
-                CommShare
-              </Text>
-            </Text>
-          </View>
-        </ImageBackground>
-
-        <View style={styles.container}>
-          <StatusBar hidden />
-          <View style={styles.bodyContent}>
-            <Text style={styles.headerName}>Estate Groups 🏡</Text>
-
-            <FlatList
-              data={estates}
-              contentContainerStyle={{ paddingBottom: 40 }}
-              renderItem={({ item }) => (
-                <View style={styles.card}>
-                  <Text style={styles.title}>{item.name}</Text>
-                  <Text style={styles.subtitle}>{item.location}</Text>
-                </View>
-              )}
-            />
-          </View>
-
-          <Modal visible={menuVisible} animationType="slide">
-            <View style={styles.sideMenu}>
-
-              <TouchableOpacity
-                onPress={toggleMenuVisable}
-                style={styles.closeIcon}
-              >
-                <Icon name="close" size={27} color="#333" />
-              </TouchableOpacity>
-
-              {[
-                "Profile",
-                "DashBoard",
-                "CreateEstate",
-                "EditProfile",
-                "DeleteAccount",
-              ].map((screen, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.menuItem}
-                  onPress={() => {
-                    navigation.navigate(screen) || setMenuVisible(false);
+                Welcome to
+                <Text
+                  style={{
+                    fontFamily: Theme.fonts.brand,
+                    color: Theme.colors.yellow,
+                    fontSize: Theme.sizes.xxl,
                   }}
                 >
-                  <Text style={styles.menuText}>{screen}</Text>
-                </TouchableOpacity>
-              ))}
+                  {"  "}
+                  CommShare
+                </Text>
+              </Text>
             </View>
-          </Modal>
-        </View>
-      </SafeAreaView>
-    </ImageBackground>
+          </ImageBackground>
+
+          <View style={styles.container}>
+            <StatusBar hidden />
+            <View style={styles.bodyContent}>
+              <Text style={styles.headerName}>Estate Groups 🏡</Text>
+
+              <FlatList
+                data={filteredEstates}
+                contentContainerStyle={{ paddingBottom: 40 }}
+                renderItem={({ item }) => (
+                  <TouchableOpacity>
+                    <View style={styles.card}>
+                      <Text style={styles.title}>{item.name}</Text>
+                      <Text style={styles.subtitle}>{item.location}</Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+
+            <View>
+              <TextInput
+                style={styles.input}
+                onChangeText={setSearch}
+                placeholder="Find estate group"
+              />
+            </View>
+
+            <Modal visible={menuVisible} animationType="slide">
+              <View style={styles.sideMenu}>
+                <TouchableOpacity
+                  onPress={toggleMenuVisable}
+                  style={styles.closeIcon}
+                >
+                  <Icon name="close" size={27} color="#333" />
+                </TouchableOpacity>
+
+                {[
+                  "Profile",
+                  "DashBoard",
+                  "CreateEstate",
+                  "EditProfile",
+                  "DeleteAccount",
+                ].map((screen, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.menuItem}
+                    onPress={() => {
+                      navigation.navigate(screen) || setMenuVisible(false);
+                    }}
+                  >
+                    <Text style={styles.menuText}>{screen}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </Modal>
+          </View>
+        </SafeAreaView>
+      </ImageBackground>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -154,14 +183,14 @@ const styles = StyleSheet.create({
   },
   backIcon: {
     position: "absolute",
-    top: 10,
-    left: 20,
+    top: 20,
+    left: 25,
     padding: 10,
   },
   menuIcon: {
     position: "absolute",
-    top: 10,
-    right: 20,
+    top: 20,
+    right: 25,
     padding: 10,
   },
   headerImage: {
@@ -169,7 +198,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     borderBottomLeftRadius: 30,
     borderBottomRightRadius: 30,
-    overflow: "hidden",  //*/////////////
+    overflow: "hidden", //*/////////////
   },
   headerName: {
     fontSize: 31,
@@ -206,7 +235,7 @@ const styles = StyleSheet.create({
   bodyContent: {
     flex: 1,
     paddingHorizontal: 5,
-    paddingTop: 20,
+    paddingTop: 15,
     backgroundColor: "transparent",
   },
   appName: {
@@ -247,10 +276,9 @@ const styles = StyleSheet.create({
     fontFamily: Theme.fonts.text400,
   },
   closeIcon: {
-  position: 'absolute',
-  top: 20,
-  right: 30,
-
+    position: "absolute",
+    top: 20,
+    right: 30,
   },
   imageWrapper: {
     width: "100%",
@@ -266,5 +294,15 @@ const styles = StyleSheet.create({
     fontFamily: Theme.fonts.text700,
     color: "#fff",
     padding: Theme.sizes.padding,
+  },
+  input: {
+    borderWidth: 1,
+    backgroundColor: "gray",
+    borderColor: "#ccc",
+    borderRadius: 10,
+    padding: 10,
+    fontSize: 16,
+    fontFamily: Theme.fonts.text400,
+    marginBottom: 45,
   },
 });

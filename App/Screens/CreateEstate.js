@@ -30,7 +30,7 @@ export function CreateEstate({ navigation }) {
       return;
     }
 
-    Alert.alert("Success", "Estate created successfully.");
+    Alert.alert("Success", "Details submitted successfully.");
     setEstateName("");
     setLocation("");
     setDateReg("");
@@ -39,11 +39,11 @@ export function CreateEstate({ navigation }) {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <ScrollView contentContainerStyle={styles.container}>
+        <ScrollView>
           <ImageBackground
             source={{ uri: crtBackgroundImg }}
             style={styles.headerBackground}
@@ -99,7 +99,7 @@ export function CreateEstate({ navigation }) {
               style={styles.button}
               onPress={handleCreateEstate}
             >
-              <Text style={styles.buttonText}>Create Estate</Text>
+              <Text style={styles.buttonText}>Submit Details</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -111,7 +111,8 @@ export function CreateEstate({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     padding: 20,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "gray",
+    height: "100%",
   },
   headerBackground: {
     height: 150,
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   formContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: "#f8f8f8",
     padding: 20,
     borderRadius: 12,
     shadowColor: "#000",

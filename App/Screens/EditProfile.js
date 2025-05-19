@@ -53,7 +53,7 @@ export function EditProfile({ navigation }) {
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <ScrollView>
           <ImageBackground
             source={{ uri: TopBackGroundUri }}
             style={styles.header}
@@ -147,7 +147,9 @@ export function EditProfile({ navigation }) {
               />
             </View>
 
-            <Text style={styles.label}>Let others see your mobile number ?</Text>
+            <Text style={styles.label}>
+              Let others see your mobile number ?
+            </Text>
             <View style={styles.toggleRow}>
               <Text style={styles.genderLabel}>Yes</Text>
               <Switch
@@ -202,8 +204,8 @@ const styles = StyleSheet.create({
   },
   editIcon: {
     position: "absolute",
-    top: 80,
-    right: 130,
+    top: 150,
+    right: 125,
     backgroundColor: Theme.colors.yellow,
     borderRadius: 20,
     padding: 6,
