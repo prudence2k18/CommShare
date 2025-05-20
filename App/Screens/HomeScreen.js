@@ -149,7 +149,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: Theme.fonts.text400,
     color: Theme.colors.text2,
-    marginTop: 2,
   },
   inboxIcon: {
     padding: 8,
