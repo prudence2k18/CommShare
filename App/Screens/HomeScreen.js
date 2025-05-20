@@ -4,7 +4,6 @@ import { Theme } from "../Components/Theme";
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 
-// Mock data for recent transactions
 const recentTransactions = [
   {
     id: '1',
@@ -73,7 +72,6 @@ export function HomeScreen({ navigation }) {
         </View>
       </TouchableOpacity>
 
-      {/* Manage Estates Card */}
       <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('CreatedEstates')}>
         <View style={styles.cardContent}>
           <View>
@@ -84,7 +82,6 @@ export function HomeScreen({ navigation }) {
         </View>
       </TouchableOpacity>
 
-      {/* Joined Estates Card */}
       <TouchableOpacity style={styles.card}>
         <View style={styles.cardContent}>
           <View style={{ flex: 1 }}>
@@ -98,7 +95,6 @@ export function HomeScreen({ navigation }) {
         </View>
       </TouchableOpacity>
 
-      {/* Recent Transactions Section */}
       <Text style={styles.sectionTitle}>Recent Transactions</Text>
       <FlatList
         data={recentTransactions}
@@ -123,7 +119,6 @@ export function HomeScreen({ navigation }) {
   );
 };
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -170,7 +165,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3, // Android shadow
+    elevation: 3, 
   },
   summaryCard: {
     backgroundColor: Theme.colors.greenLight,
@@ -181,7 +176,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3, // Android shadow
+    elevation: 3, 
     paddingVertical: 20,
   },
   sectionHeader: {
@@ -253,7 +248,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   transactionIconContainer: {
-    backgroundColor: 'rgba(72, 207, 173, 0.1)', // Primary color with opacity
+    backgroundColor: 'rgba(72, 207, 173, 0.1)',
     width: 40,
     height: 40,
     borderRadius: 20,
