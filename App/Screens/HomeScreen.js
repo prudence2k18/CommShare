@@ -39,7 +39,6 @@ const joinedEstates = 3;
 export function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      {/* Header with Profile and Welcome */}
       <View style={styles.header}>
         <View style={styles.profileContainer}>
           <Image 
@@ -56,7 +55,6 @@ export function HomeScreen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* Transaction Summary Card */}
       <TouchableOpacity style={styles.summaryCard}>
         <Text style={styles.sectionHeader}>Transaction Summary</Text>
         <View style={styles.summaryRow}>
