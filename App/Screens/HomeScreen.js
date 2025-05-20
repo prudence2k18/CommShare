@@ -1,308 +1,292 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Animated,
-  StatusBar,
-  ImageBackground,
-  KeyboardAvoidingView,
-  SafeAreaView,
-  ScrollView,
-  Platform,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import Icon from "react-native-vector-icons/FontAwesome";
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image } from 'react-native';
 import { Theme } from "../Components/Theme";
-import Modal from "react-native-modal";
+import { FontAwesome } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
+
+// Mock data for recent transactions
+const recentTransactions = [
+  {
+    id: '1',
+    estate: 'Green Valley Estate',
+    service: 'Security Fee',
+    amount: '₦15,000',
+    date: 'Today, 10:45 AM',
+    icon: 'shield'
+  },
+  {
+    id: '2',
+    estate: 'Sunrise Apartments',
+    service: 'Maintenance',
+    amount: '₦8,500',
+    date: 'Yesterday, 2:30 PM',
+    icon: 'wrench'
+  },
+  {
+    id: '3',
+    estate: 'Sunrise Apartments',
+    service: 'Electricity Bill',
+    amount: '₦12,000',
+    date: 'Oct 12, 9:15 AM',
+    icon: 'bolt'
+  },
+];
+
+const username = "John Doe";
+const totalTransactions = 24;
+const totalAmount = "₦156,800";
+const joinedEstates = 3;
 
 export function HomeScreen({ navigation }) {
-  // const navigation = useNavigation();
-  const [menuVisible, setMenuVisible] = useState(false);
-  const BackgroundImg =
-    "https://img2.joyreactor.com/pics/post/photo-village-night-805292.jpeg";
-  const HeaderImg =
-    "https://static.vecteezy.com/system/resources/thumbnails/021/379/802/small_2x/circle-of-houses-figures-build-buy-or-sell-real-estate-construction-project-buildings-and-architecture-housing-and-urbanization-real-estate-market-eco-friendly-community-of-homeowners-photo.jpg";
-
-  const [search, setSearch] = useState("");
-  const [estates, setEstates] = useState([
-    { id: 1, name: "Sunset Villas", location: "California" },
-    { id: 2, name: "Palm Heights", location: "Florida" },
-    { id: 3, name: "Maple Residences", location: "Toronto" },
-  ]);
-
-  const filteredEstates = estates.filter((estate) =>
-    estate.name.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const toggleMenuVisable = () => {
-    setMenuVisible(!menuVisible);
-  };
-
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <ImageBackground
-        source={{ uri: BackgroundImg }}
-        style={styles.fullScreenBackground}
-        resizeMode="cover"
-      >
-        <SafeAreaView style={{ flex: 1 }}>
-          <ImageBackground
-            source={{ uri: HeaderImg }}
-            style={styles.headerImage}
-            resizeMode="cover"
-          >
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Intro")}
-              style={styles.backIcon}
-            >
-              <Icon name="arrow-left" size={Theme.sizes.icon.md} color="#fff" />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={toggleMenuVisable}
-              style={styles.menuIcon}
-            >
-              <Icon
-                name="bars"
-                size={Theme.sizes.icon.md}
-                color={Theme.colors.yellow}
-              />
-            </TouchableOpacity>
-
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "flex-end",
-                justifyContent: "space-evenly",
-                paddingBottom: 10,
-                backgroundColor: "#00000040",
-              }}
-            >
-              <Text
-                style={[styles.imageTitle, { color: Theme.colors.primary }]}
-              >
-                Welcome to
-                <Text
-                  style={{
-                    fontFamily: Theme.fonts.brand,
-                    color: Theme.colors.yellow,
-                    fontSize: Theme.sizes.xxl,
-                  }}
-                >
-                  {"  "}
-                  CommShare
-                </Text>
-              </Text>
-            </View>
-          </ImageBackground>
-
-          <View style={styles.container}>
-            <StatusBar hidden />
-            <View style={styles.bodyContent}>
-              <Text style={styles.headerName}>Estate Groups 🏡</Text>
-
-              <FlatList
-                data={filteredEstates}
-                contentContainerStyle={{ paddingBottom: 40 }}
-                renderItem={({ item }) => (
-                  <TouchableOpacity>
-                    <View style={styles.card}>
-                      <Text style={styles.title}>{item.name}</Text>
-                      <Text style={styles.subtitle}>{item.location}</Text>
-                    </View>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
-
-            <View>
-              <TextInput
-                style={styles.input}
-                onChangeText={setSearch}
-                placeholder="Find estate group"
-              />
-            </View>
-
-            <Modal visible={menuVisible} animationType="slide">
-              <View style={styles.sideMenu}>
-                <TouchableOpacity
-                  onPress={toggleMenuVisable}
-                  style={styles.closeIcon}
-                >
-                  <Icon name="close" size={27} color="#333" />
-                </TouchableOpacity>
-
-                {[
-                  "Profile",
-                  "DashBoard",
-                  "CreateEstate",
-                  "EditProfile",
-                  "DeleteAccount",
-                ].map((screen, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    style={styles.menuItem}
-                    onPress={() => {
-                      navigation.navigate(screen) || setMenuVisible(false);
-                    }}
-                  >
-                    <Text style={styles.menuText}>{screen}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </Modal>
+    <View style={styles.container}>
+      {/* Header with Profile and Welcome */}
+      <View style={styles.header}>
+        <View style={styles.profileContainer}>
+          <Image 
+            source={{ uri: 'https://randomuser.me/api/portraits/men/1.jpg' }} 
+            style={styles.profileImage}
+          />
+          <View>
+            <Text style={styles.greetingText}>Hi, {username}</Text>
+            <Text style={styles.welcomeText}>Welcome to Commshare</Text>
           </View>
-        </SafeAreaView>
-      </ImageBackground>
-    </KeyboardAvoidingView>
-  );
-}
+        </View>
+        <TouchableOpacity style={styles.inboxIcon}>
+          <FontAwesome name="inbox" size={24} color={Theme.colors.text1} />
+        </TouchableOpacity>
+      </View>
 
+      {/* Transaction Summary Card */}
+      <TouchableOpacity style={styles.summaryCard}>
+        <Text style={styles.sectionHeader}>Transaction Summary</Text>
+        <View style={styles.summaryRow}>
+          <View style={styles.summaryItem}>
+            <Text style={styles.summaryNumber}>{totalTransactions}</Text>
+            <Text style={styles.summaryLabel}>Total Transactions</Text>
+          </View>
+          <View style={styles.verticalDivider} />
+          <View style={styles.summaryItem}>
+            <Text style={styles.summaryNumber}>{totalAmount}</Text>
+            <Text style={styles.summaryLabel}>Total Amount</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+
+      {/* Manage Estates Card */}
+      <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('CreatedEstates')}>
+        <View style={styles.cardContent}>
+          <View>
+            <Text style={styles.cardTitle}>Created Estate Groups</Text>
+            <Text style={styles.cardSubtext}>Manage or create estate groups</Text>
+          </View>
+          <MaterialIcons name="chevron-right" size={24} color={Theme.colors.text2} />
+        </View>
+      </TouchableOpacity>
+
+      {/* Joined Estates Card */}
+      <TouchableOpacity style={styles.card}>
+        <View style={styles.cardContent}>
+          <View style={{ flex: 1 }}>
+            <View style={styles.sectionTitleRow}>
+              <Text style={styles.cardTitle}>Your Communities</Text>
+              <Text style={styles.estateCount}>{joinedEstates}</Text>
+            </View>
+            <Text style={styles.cardSubtext}>Tap to view details</Text>
+          </View>
+          <MaterialIcons name="chevron-right" size={24} color={Theme.colors.text2} />
+        </View>
+      </TouchableOpacity>
+
+      {/* Recent Transactions Section */}
+      <Text style={styles.sectionTitle}>Recent Transactions</Text>
+      <FlatList
+        data={recentTransactions}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={[styles.card, styles.transactionCard]}>
+            <View style={styles.transactionIconContainer}>
+              <FontAwesome name={item.icon} size={16} color={Theme.colors.primary} />
+            </View>
+            <View style={styles.transactionDetails}>
+              <Text style={styles.estateName}>{item.estate}</Text>
+              <Text style={styles.serviceName}>{item.service}</Text>
+            </View>
+            <View style={styles.transactionAmountDate}>
+              <Text style={styles.amountText}>{item.amount}</Text>
+              <Text style={styles.dateText}>{item.date}</Text>
+            </View>
+          </View>
+        )}
+      />
+    </View>
+  );
+};
+
+// Styles
 const styles = StyleSheet.create({
-  fullScreenBackground: {
-    flex: 1,
-  },
   container: {
     flex: 1,
-    // backgroundColor: 'rgba(207, 195, 195, 0.8)',
-    paddingTop: 15,
-    paddingHorizontal: 20,
+    backgroundColor: Theme.colors.bg,
+    padding: 20,
+    paddingTop: 50,
   },
-  TopIcons: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    padding: 10,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
   },
-  backIcon: {
-    position: "absolute",
-    top: 20,
-    left: 25,
-    padding: 10,
+  profileContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  menuIcon: {
-    position: "absolute",
-    top: 20,
-    right: 25,
-    padding: 10,
+  profileImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 12,
   },
-  headerImage: {
-    height: 200,
-    justifyContent: "flex-end",
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    overflow: "hidden", //*/////////////
+  greetingText: {
+    fontSize: 18,
+    fontFamily: Theme.fonts.text600,
+    color: Theme.colors.text1,
   },
-  headerName: {
-    fontSize: 31,
-    // fontWeight: "bold",
-    color: Theme.colors.yellow,
-    marginBottom: 20,
-    textAlign: "center",
-    fontFamily: Theme.fonts.text700,
+  welcomeText: {
+    fontSize: 14,
+    fontFamily: Theme.fonts.text400,
+    color: Theme.colors.text2,
+    marginTop: 2,
+  },
+  inboxIcon: {
+    padding: 8,
   },
   card: {
-    backgroundColor: "rgba(255, 255, 255, 0.75)",
-    borderRadius: 20,
-    padding: 24,
-    marginBottom: 15,
-    shadowOpacity: 0.3,
-    shadowOffset: { width: 0, height: 6 },
-    shadowRadius: 10,
-    elevation: 6,
-    borderLeftWidth: 5,
-    borderLeftColor: Theme.colors.primary,
+    backgroundColor: Theme.colors.layer,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // Android shadow
   },
-  title: {
-    fontSize: 20,
-    color: "#333",
-    fontWeight: "600",
-    fontFamily: Theme.fonts.text400,
+  summaryCard: {
+    backgroundColor: Theme.colors.greenLight,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // Android shadow
+    paddingVertical: 20,
   },
-  subtitle: {
-    fontSize: 16,
-    color: "#555",
-    marginTop: 5,
-    fontFamily: Theme.fonts.text400,
-  },
-  bodyContent: {
-    flex: 1,
-    paddingHorizontal: 5,
-    paddingTop: 15,
-    backgroundColor: "transparent",
-  },
-  appName: {
-    fontSize: 36,
-    fontWeight: "900",
-    color: "#FF6F61",
-    letterSpacing: 1.5,
-    fontStyle: "italic",
-    textShadowColor: "#FFA07A",
-    textShadowOffset: { width: 1, height: 2 },
-    textShadowRadius: 4,
-  },
-  overlay: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "flex-end",
-  },
-  sideMenu: {
-    flex: 1,
-    width: "100%",
-    backgroundColor: Theme.colors.bg,
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    elevation: 10,
-  },
-  menuItem: {
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-  },
-  menuText: {
+  sectionHeader: {
     fontSize: 18,
-    color: "#333",
-    fontFamily: Theme.fonts.text400,
+    fontFamily: Theme.fonts.text600,
+    color: Theme.colors.text1,
+    marginBottom: 16,
   },
-  closeIcon: {
-    position: "absolute",
-    top: 20,
-    right: 30,
+  summaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  imageWrapper: {
-    width: "100%",
-    height: 200,
-    borderRadius: 10,
-    overflow: "hidden",
+  summaryItem: {
+    alignItems: 'center',
+    flex: 0.48
   },
-  gradientOverlay: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  imageTitle: {
-    fontSize: Theme.sizes.xxl,
+  summaryNumber: {
+    fontSize: 28,
     fontFamily: Theme.fonts.text700,
-    color: "#fff",
-    padding: Theme.sizes.padding,
+    color: Theme.colors.primary,
+    marginBottom: 4,
   },
-  input: {
-    borderWidth: 1,
-    backgroundColor: "gray",
-    borderColor: "#ccc",
-    borderRadius: 10,
-    padding: 10,
-    fontSize: 16,
+  summaryLabel: {
+    fontSize: 14,
     fontFamily: Theme.fonts.text400,
-    marginBottom: 45,
+    color: Theme.colors.text2,
+  },
+  verticalDivider: {
+    width: 1,
+    height: '80%',
+    backgroundColor: Theme.colors.line,
+    alignSelf: 'center',
+  },
+  cardContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  cardTitle: {
+    fontSize: 16,
+    fontFamily: Theme.fonts.text600,
+    color: Theme.colors.text1,
+    marginBottom: 4,
+  },
+  cardSubtext: {
+    fontSize: 14,
+    fontFamily: Theme.fonts.text400,
+    color: Theme.colors.text2,
+  },
+  sectionTitleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontFamily: Theme.fonts.text600,
+    color: Theme.colors.text1,
+    marginBottom: 12,
+  },
+  estateCount: {
+    fontSize: 16,
+    fontFamily: Theme.fonts.text600,
+    color: Theme.colors.primary,
+  },
+  transactionCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+  },
+  transactionIconContainer: {
+    backgroundColor: 'rgba(72, 207, 173, 0.1)', // Primary color with opacity
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  transactionDetails: {
+    flex: 1,
+  },
+  estateName: {
+    fontSize: 16,
+    fontFamily: Theme.fonts.text600,
+    color: Theme.colors.text1,
+    marginBottom: 2,
+  },
+  serviceName: {
+    fontSize: 14,
+    fontFamily: Theme.fonts.text400,
+    color: Theme.colors.text2,
+  },
+  transactionAmountDate: {
+    alignItems: 'flex-end',
+  },
+  amountText: {
+    fontSize: 16,
+    fontFamily: Theme.fonts.text600,
+    color: Theme.colors.primary,
+    marginBottom: 2,
+  },
+  dateText: {
+    fontSize: 12,
+    fontFamily: Theme.fonts.text400,
+    color: Theme.colors.text2,
   },
 });

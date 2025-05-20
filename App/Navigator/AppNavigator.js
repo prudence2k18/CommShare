@@ -9,6 +9,7 @@ import { CreateEstate } from "../Screens/CreateEstate";
 import { DashBoard } from "../Screens/DashBoard";
 import { DeleteAccount } from "../Screens/DeleteAccount";
 import { EditProfile } from "../Screens/EditProfile";
+import { CreatedEstates } from "../Screens/CreatedEstates";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,7 @@ export default function AppNavigator() {
         <Stack.Screen name="DashBoard" component={DashBoard} />
         <Stack.Screen name="EditProfile" component={EditProfile} />
         <Stack.Screen name="DeleteAccount" component={DeleteAccount} />
+        <Stack.Screen name="CreatedEstates" component={CreatedEstates} />
       </Stack.Navigator>
     </NavigationContainer>
   );
