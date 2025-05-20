@@ -9,10 +9,7 @@ import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 import { Intro } from "./App/Screens/Intro";
 
-import AppNavigator from "./App/Navigator/AppNavigator";
-
-
-// LogBox.ignoreLogs(["ViewPropTypes will be removed from React Native, along with all other PropTypes. We recommend that you migrate away from PropTypes and switch to a type system like TypeScript. If you need to continue using ViewPropTypes, migrate to the 'deprecated-react-native-prop-types' package."])
+import { StackNavigator } from "./App/Navigator/Stack"
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -52,6 +49,6 @@ export default function App() {
   }
 
   return (
-    <AppNavigator />
+    <StackNavigator />
   );
 }

@@ -33,7 +33,7 @@ const recentTransactions = [
 
 const username = "John Doe";
 const totalTransactions = 24;
-const totalAmount = "₦156,800";
+const totalAmount = "₦1,156,800,400";
 const joinedEstates = 3;
 
 export function HomeScreen({ navigation }) {
@@ -95,6 +95,7 @@ export function HomeScreen({ navigation }) {
 
       <Text style={styles.sectionTitle}>Recent Transactions</Text>
       <FlatList
+        scrollEnabled={false}
         data={recentTransactions}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
@@ -128,20 +129,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 13,
   },
   profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   profileImage: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     borderRadius: 25,
     marginRight: 12,
   },
   greetingText: {
-    fontSize: 18,
+    fontSize: 15,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.text1,
   },
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
     backgroundColor: Theme.colors.layer,
     borderRadius: 12,
     padding: 16,
-    marginBottom: 16,
+    marginBottom: 11,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -168,19 +169,18 @@ const styles = StyleSheet.create({
     backgroundColor: Theme.colors.greenLight,
     borderRadius: 12,
     padding: 16,
-    marginBottom: 16,
+    marginBottom: 11,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3, 
-    paddingVertical: 20,
+    elevation: 3,  
   },
   sectionHeader: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.text1,
-    marginBottom: 16,
+    marginBottom: 4,
   },
   summaryRow: {
     flexDirection: 'row',
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     flex: 0.48
   },
   summaryNumber: {
-    fontSize: 28,
+    fontSize: 17,
     fontFamily: Theme.fonts.text700,
     color: Theme.colors.primary,
     marginBottom: 4,
@@ -229,15 +229,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 17,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.text1,
-    marginBottom: 12,
+    marginBottom: 9,
   },
   estateCount: {
     fontSize: 16,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.primary,
+    marginRight: Theme.sizes.xxl *4,
   },
   transactionCard: {
     flexDirection: 'row',
