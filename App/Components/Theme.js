@@ -64,4 +64,5 @@ export const Theme = {
     },
 
     normalize,
+    size: normalize,
 };

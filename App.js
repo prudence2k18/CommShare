@@ -8,8 +8,10 @@ import { Shrikhand_400Regular } from "@expo-google-fonts/shrikhand";
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 import { Intro } from "./App/Screens/Intro";
-
 import { StackNavigator } from "./App/Navigator/Stack"
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+// LogBox.ignoreLogs(["ViewPropTypes will be removed from React Native, along with all other PropTypes. We recommend that you migrate away from PropTypes and switch to a type system like TypeScript. If you need to continue using ViewPropTypes, migrate to the 'deprecated-react-native-prop-types' package."])
 
 export default function App() {
   const [appIsReady, setAppIsReady] = useState(false);
@@ -49,6 +51,8 @@ export default function App() {
   }
 
   return (
+    <SafeAreaProvider>
     <StackNavigator />
+    </SafeAreaProvider>
   );
 }

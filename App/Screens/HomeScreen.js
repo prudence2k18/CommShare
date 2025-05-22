@@ -1,8 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, FlatList, Image, Platform, StatusBar } from 'react-native';
 import { Theme } from "../Components/Theme";
 import { FontAwesome } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
+import  {Profile}  from './Profile';
+import GroupList from './GroupList';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 const recentTransactions = [
   {
@@ -36,8 +39,9 @@ const totalTransactions = 24;
 const totalAmount = "₦1,156,800,400";
 const joinedEstates = 3;
 
-export function HomeScreen({ navigation }) {
+function Home({ navigation }) {
   return (
+    <SafeAreaView style={styles.safeArea}>
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.profileContainer}>
@@ -51,7 +55,7 @@ export function HomeScreen({ navigation }) {
           </View>
         </View>
         <TouchableOpacity style={styles.inboxIcon}>
-          <FontAwesome name="inbox" size={24} color={Theme.colors.text1} />
+          <FontAwesome name="inbox" size={Theme.sizes.icon.md} color={Theme.colors.text1} />
         </TouchableOpacity>
       </View>
 
@@ -70,17 +74,17 @@ export function HomeScreen({ navigation }) {
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('CreatedEstates')}>
+      <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Estate Groups')}>
         <View style={styles.cardContent}>
           <View>
             <Text style={styles.cardTitle}>Created Estate Groups</Text>
             <Text style={styles.cardSubtext}>Manage or create estate groups</Text>
           </View>
-          <MaterialIcons name="chevron-right" size={24} color={Theme.colors.text2} />
+          <MaterialIcons name="chevron-right" size={Theme.sizes.icon.md} color={Theme.colors.text2} />
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.card}>
+      <TouchableOpacity style={[styles.card, {marginBottom: 16}]}>
         <View style={styles.cardContent}>
           <View style={{ flex: 1 }}>
             <View style={styles.sectionTitleRow}>
@@ -89,19 +93,20 @@ export function HomeScreen({ navigation }) {
             </View>
             <Text style={styles.cardSubtext}>Tap to view details</Text>
           </View>
-          <MaterialIcons name="chevron-right" size={24} color={Theme.colors.text2} />
+          <MaterialIcons name="chevron-right" size={Theme.sizes.icon.md} color={Theme.colors.text2} />
         </View>
       </TouchableOpacity>
 
       <Text style={styles.sectionTitle}>Recent Transactions</Text>
-      <FlatList
-        scrollEnabled={false}
+      <FlatList style={styles.transactionContainer}
+      scrollEnabled={false}
+      contentContainerStyle={{ paddingBottom: 100 }}
         data={recentTransactions}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={[styles.card, styles.transactionCard]}>
+          <View style={styles.transactionCard}>
             <View style={styles.transactionIconContainer}>
-              <FontAwesome name={item.icon} size={16} color={Theme.colors.primary} />
+              <FontAwesome name={item.icon} size={Theme.sizes.icon.xs} color={Theme.colors.primary} />
             </View>
             <View style={styles.transactionDetails}>
               <Text style={styles.estateName}>{item.estate}</Text>
@@ -115,50 +120,55 @@ export function HomeScreen({ navigation }) {
         )}
       />
     </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+  flex: 1,
+  backgroundColor: Theme.colors.bg,
+  },
   container: {
     flex: 1,
     backgroundColor: Theme.colors.bg,
-    padding: 20,
-    paddingTop: 50,
+    padding: Theme.sizes.padding,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 13,
+    marginBottom: Theme.sizes.sm,
   },
   profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 25,
-    marginRight: 12,
+    width: Theme.size(40),
+    height: Theme.size(40),
+    borderRadius: Theme.sizes.xxl,
+    marginRight: Theme.sizes.sm,
   },
   greetingText: {
-    fontSize: 15,
+    fontSize: Theme.size(15),
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.text1,
   },
   welcomeText: {
-    fontSize: 14,
+    fontSize: Theme.sizes.md,
     fontFamily: Theme.fonts.text400,
     color: Theme.colors.text2,
   },
   inboxIcon: {
-    padding: 8,
+    padding: Theme.sizes.xs,
   },
   card: {
     backgroundColor: Theme.colors.layer,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 11,
+    borderRadius: Theme.sizes.sm,
+    padding: Theme.sizes.padding,
+    marginBottom: Theme.sizes.sm,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -167,9 +177,9 @@ const styles = StyleSheet.create({
   },
   summaryCard: {
     backgroundColor: Theme.colors.greenLight,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 11,
+    borderRadius: Theme.sizes.sm,
+    padding: Theme.sizes.padding,
+    marginBottom: Theme.sizes.sm,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -177,10 +187,10 @@ const styles = StyleSheet.create({
     elevation: 3,  
   },
   sectionHeader: {
-    fontSize: 16,
+    fontSize: Theme.sizes.lg,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.text1,
-    marginBottom: 4,
+    marginBottom: Theme.sizes.xxs,
   },
   summaryRow: {
     flexDirection: 'row',
@@ -191,18 +201,18 @@ const styles = StyleSheet.create({
     flex: 0.48
   },
   summaryNumber: {
-    fontSize: 17,
+    fontSize: Theme.sizes.xl,
     fontFamily: Theme.fonts.text700,
     color: Theme.colors.primary,
-    marginBottom: 4,
+    marginBottom: Theme.size(3),
   },
   summaryLabel: {
-    fontSize: 14,
+    fontSize: Theme.sizes.md,
     fontFamily: Theme.fonts.text400,
     color: Theme.colors.text2,
   },
   verticalDivider: {
-    width: 1,
+    width: Theme.size(1),
     height: '80%',
     backgroundColor: Theme.colors.line,
     alignSelf: 'center',
@@ -213,13 +223,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardTitle: {
-    fontSize: 16,
+    fontSize: Theme.sizes.lg,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.text1,
-    marginBottom: 4,
+    marginBottom: Theme.sizes.xxs,
   },
   cardSubtext: {
-    fontSize: 14,
+    fontSize: Theme.sizes.md,
     fontFamily: Theme.fonts.text400,
     color: Theme.colors.text2,
   },
@@ -229,42 +239,52 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sectionTitle: {
-    fontSize: 17,
+    fontSize: Theme.sizes.lg +1,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.text1,
-    marginBottom: 9,
+    marginBottom: 0,
   },
   estateCount: {
-    fontSize: 16,
+    fontSize: Theme.sizes.lg,
     fontFamily: Theme.fonts.text600,
-    color: Theme.colors.primary,
-    marginRight: Theme.sizes.xxl *4,
+    color: Theme.colors.green,
+    marginRight: Theme.size(80),
   },
   transactionCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 12,
+  flexDirection: 'row',
+  alignItems: 'center',
+  paddingVertical: Theme.sizes.md,
+  paddingHorizontal: Theme.sizes.xxs,
+  marginBottom: Theme.sizes.sm,
+  backgroundColor: Theme.colors.layer, 
+  borderWidth: Theme.size(2),
+  borderColor: Theme.colors.line,
+  borderRadius: Theme.sizes.xl,
+},
+
+  transactionContainer:{
+    marginTop: Theme.sizes.xxs,
   },
   transactionIconContainer: {
     backgroundColor: 'rgba(72, 207, 173, 0.1)',
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: Theme.size(40),
+    height: Theme.size(40),
+    borderRadius: Theme.sizes.xxl,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: Theme.sizes.sm,
   },
   transactionDetails: {
     flex: 1,
   },
   estateName: {
-    fontSize: 16,
+    fontSize: Theme.sizes.lg,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.text1,
-    marginBottom: 2,
+    marginBottom: Theme.size(2),
   },
   serviceName: {
-    fontSize: 14,
+    fontSize: Theme.sizes.md,
     fontFamily: Theme.fonts.text400,
     color: Theme.colors.text2,
   },
@@ -272,14 +292,60 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   amountText: {
-    fontSize: 16,
+    fontSize: Theme.sizes.lg,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.primary,
-    marginBottom: 2,
+    marginBottom: Theme.size(2),
   },
   dateText: {
-    fontSize: 12,
+    fontSize: Theme.sizes.sm,
     fontFamily: Theme.fonts.text400,
     color: Theme.colors.text2,
   },
 });
+
+const Tab = createBottomTabNavigator();
+export function HomeScreen() {
+    return (
+    <Tab.Navigator screenOptions={{ headerShown: false }}>
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Estates" component={GroupList} />
+      <Tab.Screen name="Profile" component={Profile} />
+    </Tab.Navigator>
+  );
+}
+
+
+
+/*transactionCard: {
+    backgroundColor: Theme.colors.layer,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, 
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+  },*/
+
+  /* sizes: {
+        xxs: normalize(5),
+        xs: normalize(10),
+        sm: normalize(12),
+        md: normalize(14),
+        lg: normalize(16),
+        xl: normalize(18),
+        xxl: normalize(22),
+        icon: {
+            xs: normalize(16),
+            sm: normalize(20),
+            md: normalize(24),
+            lg: normalize(32),
+        },
+        padding: normalize(16),
+        borderRadius: normalize(8),
+    },*/

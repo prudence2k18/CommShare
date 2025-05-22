@@ -3,7 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Intro } from "../Screens/Intro";
 import { HomeScreen } from "../Screens/HomeScreen";
-import { ProfileScreen } from "../Screens/Profile";
+import { Profile } from "../Screens/Profile";
 import { CreateEstate } from "../Screens/CreateEstate";
 import { DashBoard } from "../Screens/DashBoard";
 import { DeleteAccount } from "../Screens/DeleteAccount";
@@ -12,21 +12,21 @@ import { CreatedEstates } from "../Screens/CreatedEstates";
 
 const Stack = createNativeStackNavigator();
 
+{/*screenOptions={{ headerShown: false }}*/}
 export  function StackNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Intro"
-        screenOptions={{ headerShown: false }}
+        initialRouteName="HomeScreen"
       >
         <Stack.Screen name="Intro" component={Intro} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-        <Stack.Screen name="CreateEstate" component={CreateEstate} />
+        <Stack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown: false}}/>
+        <Stack.Screen name="Profile" component={Profile} options={{headerShown: false}}/>
+        <Stack.Screen name="CreateEstate" component={CreateEstate} options={{headerShown: false}}/>
         <Stack.Screen name="DashBoard" component={DashBoard} />
         <Stack.Screen name="EditProfile" component={EditProfile} />
         <Stack.Screen name="DeleteAccount" component={DeleteAccount} />
-        <Stack.Screen name="CreatedEstates" component={CreatedEstates} />
+        <Stack.Screen name="Estate Groups" component={CreatedEstates} />
       </Stack.Navigator>
     </NavigationContainer>
   );
