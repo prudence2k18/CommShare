@@ -9,8 +9,7 @@ import { DashBoard } from "../Screens/DashBoard";
 import { DeleteAccount } from "../Screens/DeleteAccount";
 import { EditProfile } from "../Screens/EditProfile";
 import { CreatedEstates } from "../Screens/CreatedEstates";
-import { Estate } from "../Screens/Estate"
-
+import { Estate } from "../Screens/Estate";
 const Stack = createNativeStackNavigator();
 
 {/*screenOptions={{ headerShown: false }}*/}

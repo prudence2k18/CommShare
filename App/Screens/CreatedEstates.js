@@ -51,7 +51,7 @@ export function CreatedEstates({ navigation }) {
             style={styles.mainButton}
             onPress={() => navigation.navigate('CreateEstate')}
           >
-            <Text style={styles.buttonText}>Create Your First</Text>
+            <Text style={styles.buttonText}>Create Your First?</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={styles.goBackButton}
