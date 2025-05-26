@@ -207,6 +207,10 @@ const styles = StyleSheet.create({
     backgroundColor: Theme.colors.bg,
     padding: Theme.sizes.padding,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    gap: Platform.select({
+      ios: Theme.sizes.xxs -4
+    }),
+    
   },
   header: {
     flexDirection: "row",
@@ -219,13 +223,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   profileImage: {
-    width: Theme.size(40),
-    height: Theme.size(40),
+    width: Theme.sizes.xs *4,
+    height: Theme.sizes.xs *4,
     borderRadius: Theme.sizes.xxl,
     marginRight: Theme.sizes.sm,
   },
   greetingText: {
-    fontSize: Theme.size(15),
+    fontSize: Theme.sizes.md +1,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.text1,
   },
@@ -277,7 +281,7 @@ const styles = StyleSheet.create({
     fontSize: Theme.sizes.xl,
     fontFamily: Theme.fonts.text700,
     color: Theme.colors.primary,
-    marginBottom: Theme.size(3),
+    marginBottom: Theme.sizes.xxs -2,
   },
   summaryLabel: {
     fontSize: Theme.sizes.md,
@@ -285,7 +289,7 @@ const styles = StyleSheet.create({
     color: Theme.colors.text2,
   },
   verticalDivider: {
-    width: Theme.size(1),
+    width: 1,
     height: "80%",
     backgroundColor: Theme.colors.line,
     alignSelf: "center",
@@ -315,13 +319,15 @@ const styles = StyleSheet.create({
     fontSize: Theme.sizes.lg + 1,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.text1,
-    marginBottom: 0,
+    marginBottom: Platform.select({
+      ios: Theme.sizes.xs -3
+    }),
   },
   estateCount: {
     fontSize: Theme.sizes.lg,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.green,
-    marginRight: Theme.size(80),
+    marginRight: Theme.sizes.icon.sm *3,
   },
   transactionCard: {
     flexDirection: "row",
@@ -330,9 +336,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: Theme.sizes.xxs,
     marginBottom: Theme.sizes.sm,
     backgroundColor: Theme.colors.layer,
-    borderWidth: Theme.size(2),
+    borderWidth: Theme.sizes.xxs -3,
     borderColor: Theme.colors.line,
     borderRadius: Theme.sizes.xl,
+    gap: Platform.select({
+      ios: Theme.sizes.xs
+    }),
   },
 
   transactionContainer: {
@@ -340,8 +349,8 @@ const styles = StyleSheet.create({
   },
   transactionIconContainer: {
     backgroundColor: "rgba(72, 207, 173, 0.1)",
-    width: Theme.size(40),
-    height: Theme.size(40),
+    width: Theme.sizes.xs *4,
+    height: Theme.sizes.xs *4,
     borderRadius: Theme.sizes.xxl,
     justifyContent: "center",
     alignItems: "center",
@@ -354,7 +363,7 @@ const styles = StyleSheet.create({
     fontSize: Theme.sizes.lg,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.text1,
-    marginBottom: Theme.size(2),
+    marginBottom: Theme.sizexxx -3,
   },
   serviceName: {
     fontSize: Theme.sizes.md,
@@ -368,7 +377,7 @@ const styles = StyleSheet.create({
     fontSize: Theme.sizes.lg,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.primary,
-    marginBottom: Theme.size(2),
+    marginBottom: Theme.sizexxx -3,
   },
   dateText: {
     fontSize: Theme.sizes.sm,
