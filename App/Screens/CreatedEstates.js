@@ -7,7 +7,9 @@ import { goBack } from 'expo-router/build/global-state/routing';
 
 const yourEstateGroups = []; // { id: '1', name: 'Sunrise Apartments', members: 24 }
 
-export function CreatedEstates({ navigation }) {
+export function CreatedEstates({ navigation, route }) {
+  const location = route.params
+  console.log(JSON.stringify(route, null, 2));
   return (
     <View style={styles.container}>
       {yourEstateGroups.length > 0 ? (

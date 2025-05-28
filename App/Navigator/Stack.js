@@ -10,6 +10,8 @@ import { DeleteAccount } from "../Screens/DeleteAccount";
 import { EditProfile } from "../Screens/EditProfile";
 import { CreatedEstates } from "../Screens/CreatedEstates";
 import { Estate } from "../Screens/Estate";
+import { LogIn } from "../Screens/Login";
+import { SignUp } from "../Screens/SignUp";
 const Stack = createNativeStackNavigator();
 
 {/*screenOptions={{ headerShown: false }}*/}
@@ -17,7 +19,7 @@ export  function StackNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="HomeScreen"
+        initialRouteName="Login"
       >
         <Stack.Screen name="Intro" component={Intro} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown: false}}/>
@@ -28,6 +30,8 @@ export  function StackNavigator() {
         <Stack.Screen name="DeleteAccount" component={DeleteAccount} />
         <Stack.Screen name="Estate Groups" component={CreatedEstates} />
         <Stack.Screen name="Estate" component={Estate} />
+        <Stack.Screen name="Login" component={LogIn} options={{headerShown: false}}/>
+        <Stack.Screen name="SignUp" component={SignUp} options={{headerShown: false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

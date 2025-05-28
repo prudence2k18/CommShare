@@ -1,4 +1,5 @@
-import React from "react";
+import {React, useContext} from "react";
+
 import {
   View,
   Text,
@@ -15,6 +16,7 @@ import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Profile } from "./Profile";
 import GroupList from "./GroupList";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { AppContext } from "../Components/globalVariable";
 
 const recentTransactions = [
   {
@@ -41,6 +43,14 @@ const recentTransactions = [
     date: "Oct 12, 9:15 AM",
     icon: "bolt",
   },
+  {
+    id: "4",
+    estate: "Sunrise Apartments",
+    service: "Electricity Bill",
+    amount: "₦12,000",
+    date: "Oct 12, 9:15 AM",
+    icon: "bolt",
+  },
 ];
 
 const username = "John Doe";
@@ -49,6 +59,8 @@ const totalAmount = "₦1,156,800,400";
 const joinedEstates = 3;
 
 function Home({ navigation }) {
+  const { userUID, userInfo } = useContext(AppContext)
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -59,7 +71,7 @@ function Home({ navigation }) {
               style={styles.profileImage}
             />
             <View>
-              <Text style={styles.greetingText}>Hi, {username}</Text>
+              <Text style={styles.greetingText}>Hi, {userInfo.firstname} {userInfo.lastname}</Text>
               <Text style={styles.welcomeText}>Welcome to Commshare</Text>
             </View>
           </View>
@@ -89,7 +101,7 @@ function Home({ navigation }) {
 
         <TouchableOpacity
           style={styles.card}
-          onPress={() => navigation.navigate("Estate Groups")}
+          onPress={() => navigation.navigate("Estate Groups", {location: "Kubwa, NYSC"})}
         >
           <View style={styles.cardContent}>
             <View>
@@ -126,8 +138,7 @@ function Home({ navigation }) {
         <Text style={styles.sectionTitle}>Recent Transactions</Text>
         <FlatList
           style={styles.transactionContainer}
-          scrollEnabled={false}
-          contentContainerStyle={{ paddingBottom: 100 }}
+          scrollEnabled={true}
           data={recentTransactions}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
@@ -207,9 +218,9 @@ const styles = StyleSheet.create({
     backgroundColor: Theme.colors.bg,
     padding: Theme.sizes.padding,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-    gap: Platform.select({
-      ios: Theme.sizes.xxs -4
-    }),
+    // gap: Platform.select({
+    //   ios: Theme.sizes.xxs -4
+    // }),
     
   },
   header: {
@@ -319,9 +330,9 @@ const styles = StyleSheet.create({
     fontSize: Theme.sizes.lg + 1,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.text1,
-    marginBottom: Platform.select({
-      ios: Theme.sizes.xs -3
-    }),
+    // marginBottom: Platform.select({
+    //   ios: Theme.sizes.xs -3
+    // }),
   },
   estateCount: {
     fontSize: Theme.sizes.lg,
