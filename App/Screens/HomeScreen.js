@@ -1,4 +1,4 @@
-import {React, useContext} from "react";
+import React, { useContext, useEffect } from "react";
 
 import {
   View,
@@ -16,7 +16,9 @@ import { FontAwesome, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { Profile } from "./Profile";
 import GroupList from "./GroupList";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { AppContext } from "../Components/globalVariable";
+import { AppContext } from "../Components/globalVariables";
+import { collection, doc, getDoc, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "../../Firebase/Settings";
 
 const recentTransactions = [
   {
@@ -59,7 +61,48 @@ const totalAmount = "₦1,156,800,400";
 const joinedEstates = 3;
 
 function Home({ navigation }) {
-  const { userUID, userInfo } = useContext(AppContext)
+  const { userUID, userInfo, setUserInfo, setCreatedEstates, createdEstates,
+        communities, setCommunities,
+    } = useContext(AppContext);
+
+    function fetchCreatedEstates() {
+        const ref = collection(db, "estates");
+        const q = query(ref, where("createdBy", "==", userUID));
+        onSnapshot(q, (snapshot) => {
+            const qd = [];
+            snapshot.forEach(item => {
+                qd.push({ ...item.data(), docID: item.id })
+            })
+            // console.log(JSON.stringify(qd, null, 2));
+            setCreatedEstates(qd.sort((a, b) => b.createdAt - a.createdAt));
+        })
+    }
+
+    function fetchCommunities() {
+        const ref = collection(db, "estates");
+        const q = query(ref, where("users", "array-contains", userUID));
+        onSnapshot(q, (snapshot) => {
+            const qd = [];
+            snapshot.forEach(item => {
+                qd.push({ ...item.data(), docID: item.id })
+            })
+            // console.log(JSON.stringify(qd, null, 2));
+            setCommunities(qd);
+        })
+    }
+
+  useEffect(() => {
+    // getDoc(doc(db, "users", userUID))
+    //     .then(user => {
+    //         setUserInfo(user.data())
+    //     })
+
+    onSnapshot(doc(db, "users", userUID), (user) => {
+      setUserInfo(user.data());
+    });
+    fetchCreatedEstates()
+    fetchCommunities()
+  }, []);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -67,11 +110,14 @@ function Home({ navigation }) {
         <View style={styles.header}>
           <View style={styles.profileContainer}>
             <Image
-              source={{ uri: "https://randomuser.me/api/portraits/men/1.jpg" }}
+              source={userInfo?.image ? { uri: userInfo.image } : require('../../assets/user.png')}
               style={styles.profileImage}
             />
             <View>
-              <Text style={styles.greetingText}>Hi, {userInfo.firstname} {userInfo.lastname}</Text>
+              <Text style={styles.greetingText}>
+                Hi, {userInfo.firstname}{" "}
+                {userInfo.lastname}
+              </Text>
               <Text style={styles.welcomeText}>Welcome to Commshare</Text>
             </View>
           </View>
@@ -101,11 +147,14 @@ function Home({ navigation }) {
 
         <TouchableOpacity
           style={styles.card}
-          onPress={() => navigation.navigate("Estate Groups", {location: "Kubwa, NYSC"})}
+          onPress={() => navigation.navigate('Estates')}
         >
           <View style={styles.cardContent}>
             <View>
+              <View style={styles.sectionTitleRow}>
               <Text style={styles.cardTitle}>Created Estate Groups</Text>
+              <Text style={styles.estateCount}> ({createdEstates.length})</Text>
+              </View>
               <Text style={styles.cardSubtext}>
                 Manage or create estate groups
               </Text>
@@ -118,12 +167,12 @@ function Home({ navigation }) {
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.card, { marginBottom: 16 }]}>
+        <TouchableOpacity onPress={() => { navigation.navigate("Communities") }} style={styles.card}>
           <View style={styles.cardContent}>
-            <View style={{ flex: 1 }}>
+            <View>
               <View style={styles.sectionTitleRow}>
                 <Text style={styles.cardTitle}>Your Communities</Text>
-                <Text style={styles.estateCount}>{joinedEstates}</Text>
+                <Text style={styles.estateCount}> ({communities.length})</Text>
               </View>
               <Text style={styles.cardSubtext}>Tap to view details</Text>
             </View>
@@ -168,6 +217,7 @@ function Home({ navigation }) {
 
 const Tab = createBottomTabNavigator();
 export function HomeScreen() {
+  const { userInfo } = useContext(AppContext);
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -202,7 +252,7 @@ export function HomeScreen() {
       <Tab.Screen
         name="Profile"
         component={Profile}
-        options={{ title: "Johnny" }}
+        options={{ title: `${userInfo.firstname}` }}
       />
     </Tab.Navigator>
   );
@@ -221,7 +271,6 @@ const styles = StyleSheet.create({
     // gap: Platform.select({
     //   ios: Theme.sizes.xxs -4
     // }),
-    
   },
   header: {
     flexDirection: "row",
@@ -234,13 +283,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   profileImage: {
-    width: Theme.sizes.xs *4,
-    height: Theme.sizes.xs *4,
+    width: Theme.sizes.xs * 4,
+    height: Theme.sizes.xs * 4,
     borderRadius: Theme.sizes.xxl,
     marginRight: Theme.sizes.sm,
   },
   greetingText: {
-    fontSize: Theme.sizes.md +1,
+    fontSize: Theme.sizes.md + 1,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.text1,
   },
@@ -292,7 +341,7 @@ const styles = StyleSheet.create({
     fontSize: Theme.sizes.xl,
     fontFamily: Theme.fonts.text700,
     color: Theme.colors.primary,
-    marginBottom: Theme.sizes.xxs -2,
+    marginBottom: Theme.sizes.xxs - 2,
   },
   summaryLabel: {
     fontSize: Theme.sizes.md,
@@ -338,7 +387,7 @@ const styles = StyleSheet.create({
     fontSize: Theme.sizes.lg,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.green,
-    marginRight: Theme.sizes.icon.sm *3,
+    marginRight: Theme.sizes.icon.sm * 3,
   },
   transactionCard: {
     flexDirection: "row",
@@ -347,11 +396,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: Theme.sizes.xxs,
     marginBottom: Theme.sizes.sm,
     backgroundColor: Theme.colors.layer,
-    borderWidth: Theme.sizes.xxs -3,
+    borderWidth: Theme.sizes.xxs - 3,
     borderColor: Theme.colors.line,
     borderRadius: Theme.sizes.xl,
     gap: Platform.select({
-      ios: Theme.sizes.xs
+      ios: Theme.sizes.xs,
     }),
   },
 
@@ -360,8 +409,8 @@ const styles = StyleSheet.create({
   },
   transactionIconContainer: {
     backgroundColor: "rgba(72, 207, 173, 0.1)",
-    width: Theme.sizes.xs *4,
-    height: Theme.sizes.xs *4,
+    width: Theme.sizes.xs * 4,
+    height: Theme.sizes.xs * 4,
     borderRadius: Theme.sizes.xxl,
     justifyContent: "center",
     alignItems: "center",
@@ -374,7 +423,7 @@ const styles = StyleSheet.create({
     fontSize: Theme.sizes.lg,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.text1,
-    marginBottom: Theme.sizexxx -3,
+    marginBottom: Theme.sizexxx - 3,
   },
   serviceName: {
     fontSize: Theme.sizes.md,
@@ -388,7 +437,7 @@ const styles = StyleSheet.create({
     fontSize: Theme.sizes.lg,
     fontFamily: Theme.fonts.text600,
     color: Theme.colors.primary,
-    marginBottom: Theme.sizexxx -3,
+    marginBottom: Theme.sizexxx - 3,
   },
   dateText: {
     fontSize: Theme.sizes.sm,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -16,36 +16,64 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { Theme } from "../Components/Theme";
+import { AppContext } from "../Components/globalVariables";
+import { collection, doc, addDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../Firebase/Settings";
+import { ToastApp } from "../Components/Toast";
 
-export function EditProfile({ navigation }) {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [mobile, setMobile] = useState("");
-  const [dob, setDob] = useState("");
-  const [bio, setBio] = useState("");
+export function EditProfile({ navigation, route }) {
+  const { userUID, setPreloader, userInfo, setUserInfo, users } =
+    useContext(AppContext);
+    // const userID = route?.params?.userID || userUID;
+  // const userID = userUID;
+
+  const [firstname, setFirstname] = useState(userInfo?.firstname);
+  const [lastname, setLastname] = useState(userInfo?.lastname || "");
+  const [email, setEmail] = useState(userInfo?.email || "");
+  const [mobile, setMobile] = useState(userInfo?.phone || "");
+  const [bio, setBio] = useState(userInfo?.bio || "");
   const [isYes, setIsYes] = useState(false);
   const [isNo, setIsNo] = useState(false);
 
   const handleEditProfile = () => {
-    if (!username || !email || (!isYes && !isNo)) {
+    if (!firstname || !lastname || !email) {
       Alert.alert("Missing Info", "Please fill in all required fields.");
       return;
     }
 
-    Alert.alert("Success", "Profile details changed.");
-    setUsername("");
-    setEmail("");
-    setMobile("");
-    setDob("");
-    setBio("");
-    navigation.goBack();
+    setPreloader(true);
+    updateDoc(doc(db, "users", userUID), {
+      firstname,
+      lastname,
+      email,
+      bio,
+      phone: mobile,
+    })
+      .then(() => {
+        ToastApp("Profile updated successfully.");
+        setFirstname("");
+        setLastname("");
+        setMobile("")
+        setBio("");
+        setPreloader(false);
+
+        navigation.goBack();
+      })
+      .catch((error) => {
+        console.log("Error updating profile:", error);
+        setPreloader(false);
+        Alert.alert(
+          "Update Error",
+          "Failed to update profile. Please try again."
+        );
+      });
   };
 
   const TopBackGroundUri =
     "https://images.pexels.com/photos/517883/pexels-photo-517883.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1";
 
-  const profilePicUri =
-    "http://thispix.com/wp-content/uploads/2015/06/passport-010.jpg";
+  // const profilePicUri =
+  //   "http://thispix.com/wp-content/uploads/2015/06/passport-010.jpg";
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f8f8f8" }}>
@@ -53,31 +81,39 @@ export function EditProfile({ navigation }) {
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <ScrollView>
+        <ScrollView >
           <ImageBackground
             source={{ uri: TopBackGroundUri }}
             style={styles.header}
           >
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => navigation.goBack()}
               style={styles.backIcon}
             >
               <Icon name="arrow-left" size={24} color={Theme.colors.yellow} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
-            <Image source={{ uri: profilePicUri }} style={styles.profilePic} />
+            <Image
+              source={
+                userInfo?.image
+                  ? { uri: userInfo.image }
+                  : require("../../assets/user.png")
+              }
+              style={styles.profilePic}
+            />
             <TouchableOpacity
               style={styles.editIcon}
               onPress={() => Alert.alert("Edit Profile Picture")}
             >
               <Icon name="pencil" size={18} color="#fff" />
             </TouchableOpacity>
-            <Text style={styles.userName}>Lacey Fernandez</Text>
+            <Text style={styles.userName}>{userInfo.firstname} {userInfo.lastname}</Text>
           </ImageBackground>
 
           <View style={styles.formCard}>
             <Text style={styles.cardTitle}>EDIT USER PROFILE</Text>
 
+            <Text style={styles.label}>firstname *</Text>
             <View style={styles.inputContainer}>
               <Icon
                 name="account"
@@ -86,14 +122,32 @@ export function EditProfile({ navigation }) {
                 style={styles.inputIcon}
               />
               <TextInput
-                placeholder="Enter User Name *"
-                value={username}
-                onChangeText={setUsername}
+                placeholder="Enter First Name *"
+                value={firstname}
+                onChangeText={setFirstname}
                 placeholderTextColor="#888"
                 style={[styles.input, styles.inputText]}
               />
             </View>
 
+              <Text style={styles.label}>lastname *</Text>
+            <View style={styles.inputContainer}>
+              <Icon
+                name="account"
+                size={Theme.sizes.icon.md}
+                color="#555"
+                style={styles.inputIcon}
+              />
+              <TextInput
+                placeholder="Enter Last Name *"
+                value={lastname}
+                onChangeText={setLastname}
+                placeholderTextColor="#888"
+                style={[styles.input, styles.inputText]}
+              />
+            </View>
+
+              <Text style={styles.label}>Email</Text>
             <View style={styles.inputContainer}>
               <Icon
                 name="email"
@@ -104,6 +158,7 @@ export function EditProfile({ navigation }) {
               <TextInput
                 placeholder="Enter Email *"
                 value={email}
+                editable={false}
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
@@ -112,6 +167,7 @@ export function EditProfile({ navigation }) {
               />
             </View>
 
+              <Text style={styles.label}>Phone</Text>
             <View style={styles.inputContainer}>
               <Icon
                 name="cellphone"
@@ -122,6 +178,7 @@ export function EditProfile({ navigation }) {
               <TextInput
                 placeholder="Enter your mobile number"
                 value={mobile}
+                // editable={false}
                 onChangeText={setMobile}
                 keyboardType="phone-pad"
                 placeholderTextColor="#888"
@@ -129,6 +186,7 @@ export function EditProfile({ navigation }) {
               />
             </View>
 
+              <Text style={styles.label}>Bio</Text>
             <View style={styles.inputContainer}>
               <Icon
                 name="calendar"
@@ -147,7 +205,7 @@ export function EditProfile({ navigation }) {
               />
             </View>
 
-            <Text style={styles.label}>
+            {/* <Text style={styles.label2}>
               Let others see your mobile number ?
             </Text>
             <View style={styles.toggleRow}>
@@ -167,7 +225,7 @@ export function EditProfile({ navigation }) {
                   if (val) setIsYes(false);
                 }}
               />
-            </View>
+            </View> */}
 
             <TouchableOpacity
               style={styles.saveButton}
@@ -260,7 +318,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   label: {
-    fontSize: 16,
+        fontSize: Theme.sizes.sm,
+        fontWeight: "600",
+        marginBottom: 1,
+    },
+  label2: {
+    fontSize: Theme.sizes.md,
     fontWeight: "600",
     marginBottom: 6,
     color: "#333",

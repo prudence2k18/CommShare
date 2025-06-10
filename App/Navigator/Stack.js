@@ -12,6 +12,11 @@ import { CreatedEstates } from "../Screens/CreatedEstates";
 import { Estate } from "../Screens/Estate";
 import { LogIn } from "../Screens/Login";
 import { SignUp } from "../Screens/SignUp";
+import { UpdateEstate } from "../Screens/UpdateEstate";
+import { ForgotPassword } from '../Screens/ForgotPassword';
+import { AddUsers } from '../Screens/AddUsers';
+import { Residents }  from '../Screens/Residents';
+import { Communities } from '../Screens/Communities';
 const Stack = createNativeStackNavigator();
 
 {/*screenOptions={{ headerShown: false }}*/}
@@ -19,7 +24,7 @@ export  function StackNavigator() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Login"
+        initialRouteName="HomeScreen"
       >
         <Stack.Screen name="Intro" component={Intro} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} options={{headerShown: false}}/>
@@ -29,9 +34,13 @@ export  function StackNavigator() {
         <Stack.Screen name="EditProfile" component={EditProfile} options={{headerShown: false}}/>
         <Stack.Screen name="DeleteAccount" component={DeleteAccount} />
         <Stack.Screen name="Estate Groups" component={CreatedEstates} />
+        <Stack.Screen name="Communities" component={Communities} options={{ title: "Created Estates" }} />
         <Stack.Screen name="Estate" component={Estate} />
         <Stack.Screen name="Login" component={LogIn} options={{headerShown: false}}/>
         <Stack.Screen name="SignUp" component={SignUp} options={{headerShown: false}}/>
+        <Stack.Screen name="UpdateEstate" component={UpdateEstate} options={{headerShown: false}}/>
+        <Stack.Screen name="Residents" component={Residents} />
+        <Stack.Screen name="AddUsers" component={AddUsers} />
       </Stack.Navigator>
     </NavigationContainer>
   );

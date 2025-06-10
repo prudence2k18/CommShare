@@ -9,13 +9,15 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React from "react";
+import React, { useContext } from 'react'
 import { Theme } from "../Components/Theme";
 import { Formik } from "formik";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../Firebase/Settings";
+import { auth, db } from "../../Firebase/Settings";
 import { errorMessage } from "../Components/formatErrorMessage";
 import * as Yup from "yup";
+import { doc, setDoc } from "firebase/firestore";
+import { AppContext } from '../Components/globalVariables'
 
 const SignUpSchema = Yup.object({
   firstname: Yup.string()
@@ -37,6 +39,7 @@ const SignUpSchema = Yup.object({
 });
 
 export function SignUp({ navigation }) {
+  const { setPreloader, setUserUID } = useContext(AppContext)
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -49,30 +52,42 @@ export function SignUp({ navigation }) {
           <Text style={styles.subtitle}>Join us today</Text>
 
           <Formik
-            initialValues={{
-              firstname: "",
-              lastname: "",
-              email: "",
-              password: "",
-              confirmPassword: "",
-            }}
-            validationSchema={SignUpSchema}
-            onSubmit={(values) => {
-              // console.log(values)
-              createUserWithEmailAndPassword(
-                auth,
-                values.email,
-                values.password
-              )
-                .then(() => {
-                  navigation.replace("HomeScreen");
-                })
-                .catch((error) => {
-                  console.log("Error signing up:", error);
-                  Alert.alert("Sign Up Error", errorMessage(error.code));
-                });
-            }}
-          >
+                    initialValues={{ firstname: "", lastname: "", email: "", password: "", confirmPassword: "" }}
+                    validationSchema={SignUpSchema}
+                    onSubmit={(values) => {
+                        // console.log(values)
+                        setPreloader(true)
+                        createUserWithEmailAndPassword(auth, values.email, values.password)
+                            .then((data) => {
+                                const { uid } = data.user;
+                                // addDoc
+                                setDoc(doc(db, "users", uid), {
+                                    firstname: values.firstname,
+                                    lastname: values.lastname,
+                                    email: values.email,
+                                    image: null,
+                                    phone: null,
+                                    createdAt: new Date().getTime(),
+                                    balance: 0,
+                                    bio: "",
+                                    role: "user",
+                                }).then(() => {
+                                    setPreloader(false)
+                                    setUserUID(uid)
+                                    navigation.replace("HomeScreen");
+                                }).catch((error) => {
+                                    setPreloader(false)
+                                    console.log("Error signing up:", error);
+                                    Alert.alert("Sign Up Error", errorMessage(error.code));
+                                });
+                            })
+                            .catch((error) => {
+                                setPreloader(false)
+                                console.log("Error signing up:", error);
+                                Alert.alert("Sign Up Error", errorMessage(error.code));
+                            });
+                    }}
+                >
             {({ handleChange, handleSubmit, values, errors, touched }) => (
               <View style={styles.form}>
                 <TextInput

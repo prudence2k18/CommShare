@@ -1,44 +1,93 @@
-import { Alert, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import {React, useContext} from 'react';
-import { Theme } from '../Components/Theme';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../Firebase/Settings';
-import { errorMessage } from '../Components/formatErrorMessage';
+import { Alert, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import React, { useContext } from 'react'
+import { Theme } from '../Components/Theme'
+import { Formik } from 'formik'
+import * as Yup from 'yup'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth, db } from '../../Firebase/Settings'
+import { errorMessage } from '../Components/formatErrorMessage'
 import { ActivityIndicator } from 'react-native-paper'
 import { AppContext } from '../Components/globalVariables'
+import { collection, doc, getDocs, query, updateDoc, where } from 'firebase/firestore'
 
 const validation = Yup.object({
     email: Yup.string().email().required(),
-    password: Yup.string().min(6).max(30).required()
 })
 
-export function LogIn({ navigation }) {
-    const { setUserUID, setPreloader, setUserInfo } = useContext(AppContext)
+export function AddUsers({ navigation, route }) {
+    const { setUserUID, setPreloader, createdEstates, docID } = useContext(AppContext)
+
+    const estate = createdEstates.find(item => item.docID == docID)
+
+    function fetchCreatedEstates(email) {
+        setPreloader(true);
+
+        const ref = collection(db, "users");
+        const q = query(ref, where("email", "==", email));
+        getDocs(q,).then((users) => {
+            const qd = [];
+            users.forEach(item => {
+                qd.push({ ...item.data(), userUID: item.id })
+            })
+            setPreloader(false);
+            if (qd.length > 0) {
+                // const user = qd[0];
+                // if (user.createdEstates.includes(docID)) {
+                // Alert.alert("User Already Added", "This user is already part of this estate.");
+                // }
+                if (estate?.users?.includes(qd[0]?.userUID)) {
+                    Alert.alert("User Already Added", "This user is already part of this estate.");
+                } else {
+                    Alert.alert("User found", `Do you want to add ${qd[0]?.firstname} ${qd[0]?.lastname} to this estate?`,
+                        [
+                            {
+                                text: "Cancel",
+                                style: "cancel"
+                            },
+                            {
+                                text: "Add User",
+                                onPress: () => {
+                                    setPreloader(true);
+                                    const estateRef = doc(db, "estates", docID);
+                                    estate.users.push(qd[0]?.userUID);
+                                    updateDoc(estateRef, { users: estate.users })
+                                        .then(() => {
+                                            setPreloader(false);
+                                            Alert.alert("User Added", `${qd[0]?.firstname} ${qd[0]?.lastname} has been added to the estate.`);
+                                            navigation.goBack();
+                                        })
+                                        .catch((error) => {
+                                            setPreloader(false);
+                                            Alert.alert("Error", errorMessage(error.code));
+                                        });
+                                }
+                            }
+                        ]
+                    );
+
+                }
+
+            } else {
+                Alert.alert("User Not Found", "No user found with this email.");
+            }
+        })
+            .catch((error) => {
+                setPreloader(false);
+                Alert.alert("Error", errorMessage(error.code));
+            });
+    }
+
 
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.content}>
-                <Text style={styles.title}>Welcome Back</Text>
-                <Text style={styles.subtitle}>Sign in to continue</Text>
+                <Text style={styles.title}>Add Users</Text>
+                <Text style={styles.subtitle}>Add more users to this estate ({estate?.name})</Text>
 
                 <Formik
-                    initialValues={{ email: "", password: "" }}
+                    initialValues={{ email: "", }}
                     onSubmit={(values) => {
-                        setPreloader(true)
-                        signInWithEmailAndPassword(auth, values.email, values.password)
-                            .then((data) => {
-                                const { uid } = data.user;
-                                setUserUID(uid);
-                                setPreloader(false)
-                                navigation.replace("HomeScreen");
-                            })
-                            .catch((error) => {
-                                console.log("Error signing up:", error);
-                                setPreloader(false)
-                                Alert.alert("Sign Up Error", errorMessage(error.code));
-                            });
+                        fetchCreatedEstates(values.email)
                     }}
                     validationSchema={validation}
                 >
@@ -47,7 +96,7 @@ export function LogIn({ navigation }) {
                             <View style={styles.inputContainer}>
                                 <TextInput
                                     style={styles.input}
-                                    placeholder="Email"
+                                    placeholder="User Email"
                                     placeholderTextColor={Theme.colors.text2}
                                     autoCapitalize="none"
                                     autoCorrect={false}
@@ -59,41 +108,14 @@ export function LogIn({ navigation }) {
                                 <Text style={{ color: Theme.colors.red }}>{touched.email && errors.email}</Text>
                             </View>
 
-                            <View style={styles.inputContainer}>
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder="Password"
-                                    placeholderTextColor={Theme.colors.text2}
-                                    autoCapitalize="none"
-                                    autoCorrect={false}
-                                    secureTextEntry
-                                    onChangeText={handleChange("password")}
-                                    onBlur={handleBlur("password")}
-                                    value={values.password}
-                                />
-                                <Text style={{ color: Theme.colors.red }}>{touched.password && errors.password}</Text>
-                            </View>
-
-                            <TouchableOpacity
-                                style={styles.forgotButton}
-                                onPress={() => navigation.navigate("ForgotPassword")}
-                            >
-                                <Text style={styles.forgotText}>Forgot Password?</Text>
-                            </TouchableOpacity>
 
                             <TouchableOpacity
                                 style={styles.loginButton}
                                 onPress={handleSubmit}
                             >
-                                <Text style={styles.loginButtonText}>Log In</Text>
+                                <Text style={styles.loginButtonText}>Proceed</Text>
                             </TouchableOpacity>
 
-                            <View style={styles.signupContainer}>
-                                <Text style={styles.signupText}>Don't have an account? </Text>
-                                <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-                                    <Text style={styles.signupLink}>Sign Up</Text>
-                                </TouchableOpacity>
-                            </View>
                         </View>
                     )}
                 </Formik>
