@@ -115,13 +115,13 @@ function Home({ navigation }) {
             />
             <View>
               <Text style={styles.greetingText}>
-                Hi, {userInfo.firstname}{" "}
-                {userInfo.lastname}
+                Hi, {userInfo?.firstname}{" "}
+                {userInfo?.lastname}
               </Text>
               <Text style={styles.welcomeText}>Welcome to Commshare</Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.inboxIcon}>
+          <TouchableOpacity style={styles.inboxIcon} onPress={() => navigation.navigate("Payment")}>
             <FontAwesome
               name="inbox"
               size={Theme.sizes.icon.md}

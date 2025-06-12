@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   TextInput,
+  Alert,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { Theme } from "../Components/Theme";
@@ -15,8 +16,9 @@ import { AppContext } from "../Components/globalVariables";
 import { formatTimeAgo } from "../Components/formatTimeAgo";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, arrayRemove } from "firebase/firestore";
 import { RenderUser } from "../Components/RenderUser";
+import { db } from "../../Firebase/Settings";
 
 // Sample data for Commshare groups
 const groups = [
@@ -48,6 +50,44 @@ export const Residents = ({ navigation, route }) => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const estate = createdEstates.find((item) => item.docID == docID);
+
+  const handleDeleteUser = async (userID) => {
+    Alert.alert(
+      "Confirm Removal",
+      "Are you sure you want to remove this user?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Remove",
+          onPress: async () => {
+            try {
+              const estateRef = doc(db, "estates", docID);
+
+              await updateDoc(estateRef, {
+                users: arrayRemove(userID),
+              });
+
+              const updatedEstate = {
+                ...estate,
+                users: estate.users.filter((id) => id !== userID),
+              };
+
+              estate.users = updatedEstate.users;
+
+              setUserInfo((prev) => ({ ...prev }));
+              Alert.alert("User Removed", "The user was successfully removed.");
+            } catch (error) {
+              console.error("Error removing user:", error);
+              Alert.alert(
+                "Error",
+                "Something went wrong while removing the user."
+              );
+            }
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -89,7 +129,9 @@ export const Residents = ({ navigation, route }) => {
       <FlatList
         data={estate?.users}
         keyExtractor={(item) => item} // Since item is the ID itself
-        renderItem={({ item }) => <RenderUser item={item} />}
+        renderItem={({ item }) => (
+          <RenderUser item={item} onDelete={() => handleDeleteUser(item)} />
+        )}
       />
     </SafeAreaView>
   );

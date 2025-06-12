@@ -8,7 +8,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import { db } from '../../Firebase/Settings'
 import { AppContext } from './globalVariables'
 
-export function RenderUser({ item }) {
+export function RenderUser({ item, onDelete }) {
     const { userUID, userInfo, setUserInfo, createdEstates, docID } = useContext(AppContext);
     const [userData, setUserData] = useState({});
 
@@ -31,11 +31,11 @@ export function RenderUser({ item }) {
             <View style={styles.headerRow}>
                 <Image source={userData?.image ? { uri: userData?.image } : require('../../assets/icon.png')} style={styles.avatar} />
                 <View style={styles.textContainer}>
-                    <Text style={styles.groupName}>{userData?.firsname} {userData?.lastname}</Text>
+                    <Text style={styles.groupName}>{userData?.firstname} {userData?.lastname}</Text>
                     <Text style={styles.timestamp}>{userData?.bio || "-"}</Text>
                 </View>
             </View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={onDelete}>
                 <FontAwesomeIcon icon={faTrashAlt} color={Theme.colors.red} size={25} />
             </TouchableOpacity>
         </View>

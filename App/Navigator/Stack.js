@@ -17,6 +17,9 @@ import { ForgotPassword } from '../Screens/ForgotPassword';
 import { AddUsers } from '../Screens/AddUsers';
 import { Residents }  from '../Screens/Residents';
 import { Communities } from '../Screens/Communities';
+import {AddContribution} from "../Screens/AddContribution";
+import { Payment } from "../Screens/Payment";
+import { Contributions } from "../Screens/Contributions";
 const Stack = createNativeStackNavigator();
 
 {/*screenOptions={{ headerShown: false }}*/}
@@ -41,6 +44,9 @@ export  function StackNavigator() {
         <Stack.Screen name="UpdateEstate" component={UpdateEstate} options={{headerShown: false}}/>
         <Stack.Screen name="Residents" component={Residents} />
         <Stack.Screen name="AddUsers" component={AddUsers} />
+        <Stack.Screen name="AddContribution" component={AddContribution} />
+        <Stack.Screen name="Payment" component={Payment} options={{headerShown: false}}/>
+        <Stack.Screen name="Contributions" component={Contributions} options={{headerShown: false}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );

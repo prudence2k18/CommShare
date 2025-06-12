@@ -26,7 +26,7 @@ export function Estate({ navigation, route }) {
     const communityName = "RockFace Estate";
     const options = [
         { id: "0", title: "Residents", description: "View and contribute funds", icon: "users", screen: "Residents" },// view balance, payment plans, account details and pay in, only admin can pay out
-        { id: "1", title: "Contributions", description: "View and contribute funds", icon: "hand-holding-usd", screen: null },// view balance, payment plans, account details and pay in, only admin can pay out
+        { id: "1", title: "Contributions", description: "View and contribute funds", icon: "hand-holding-usd", screen: "Contributions" },// view balance, payment plans, account details and pay in, only admin can pay out
         { id: "2", title: "Fuel Pool", description: "Track diesel/fuel purchases", icon: "gas-pump", screen: null },
         { id: "3", title: "Electricity", description: "Monitor Power costs", icon: "bolt", screen: null },
         { id: "4", title: "Security", description: "See guard schedules", icon: "shield-alt", screen: null },
