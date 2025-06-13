@@ -8,25 +8,24 @@ import {
   TouchableOpacity,
   SafeAreaView,
   TextInput,
+  StatusBar,
   Platform,
-  StatusBar
 } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { Theme } from '../Components/Theme';
 import { AppContext } from '../Components/globalVariables';
 import { formatTimeAgo } from '../Components/formatTimeAgo';
 
-// Sample data for Commshare groups
 
 const GroupList = ({ navigation, user }) => {
-  const { userUID, userInfo, setUserInfo, createdEstates, setDocID } = useContext(AppContext);
+  const { userUID, userInfo, setUserInfo, createdEstates, setEstate } = useContext(AppContext);
   const [searchQuery, setSearchQuery] = useState('');
 
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.itemContainer}
-      onPress={() => { setDocID(item.docID); navigation.navigate('Estate') }}
+      onPress={() => { setEstate(item); navigation.navigate('Estate') }}
     >
       <Image source={item?.image ? { uri: item?.image } : require('../../assets/icon.png')} style={styles.avatar} />
       <View style={styles.textContainer}>
@@ -81,7 +80,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    paddingTop: StatusBar.currentHeight || (Platform.OS === 'android' ? 25 : 0),
   },
   header: {
     flexDirection: 'row',

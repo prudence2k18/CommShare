@@ -8,15 +8,16 @@ import { ToastApp } from '../Components/Toast';
 import { errorMessage } from '../Components/formatErrorMessage';
 import { db } from '../../Firebase/Settings';
 
+// console.log("Pastack:", Paystack);
 export function Payment({ navigation, route }) {
-    const { userUID, setPreloader, userInfo } = useContext(AppContext);
-    const { amount } = route?.params
+    const { userUID, setPreloader, userInfo, estate } = useContext(AppContext);
+    const { contribution } = route?.params
 
     return (
         <View style={{ flex: 1 }}>
             <Paystack
                 paystackKey="pk_test_92fcc0077ec7f42a73ff01c87db79c3698b06dec"
-                amount={amount + ((1.8 / 100) * amount)}
+                amount={contribution.amount + ((1.8 / 100) * contribution.amount)}
                 firstName={userInfo.firstname}
                 lastName={userInfo.lastname}
                 billingEmail={userInfo.email}
@@ -26,29 +27,40 @@ export function Payment({ navigation, route }) {
                 }}
                 onSuccess={(data) => {
                     setPreloader(true)
-                    addDoc(collection(db, "transactions"), {
-                        user: userUID,
-                        amount,
-                        status: "success",
-                        type: "debit",
-                        title: "Contribution",
-                        description: "Payment for contribution",
-                        transactionRef: data.transactionRef,
-                        timestamp: Date.now()
+                    updateDoc(doc(db, "contributions", contribution.docID), {
+                        paidUsers: [...contribution.paidUsers, userUID],
+                    }).finally(() => {
+                        addDoc(collection(db, "transactions"), {
+                            user: userUID,
+                            amount: contribution.amount,
+                            status: "success",
+                            type: "debit",
+                            title: contribution.name,
+                            contributionID: contribution.docID,
+                            username: `${userInfo.firstname} ${userInfo.lastname}`,
+                            estateName: estate.name,
+                            estateID: estate.docID,
+                            description: "Payment for contribution",
+                            transactionRef: data.transactionRef,
+                            timestamp: Date.now()
+                        })
+                            .then(() => {
+                                setPreloader(false)
+                                navigation.goBack()
+                                ToastApp("Payment successful")
+                            })
+                            .catch((error) => {
+                                setPreloader(false)
+                                console.log(error);
+                                ToastApp(errorMessage(error.code))
+                                navigation.goBack()
+                            })
+                    }).catch((error) => {
+                        setPreloader(false)
+                        console.log(error);
+                        ToastApp(errorMessage(error.code))
+                        navigation.goBack()
                     })
-                        .then(() => {
-                            setPreloader(false)
-                            navigation.goBack()
-                            ToastApp("Payment successful")
-                        })
-                        .catch((error) => {
-                            setPreloader(false)
-                            console.log(error);
-                            ToastApp(errorMessage(error.code))
-                            navigation.goBack()
-                        })
-
-
                 }}
                 autoStart={true}
             />

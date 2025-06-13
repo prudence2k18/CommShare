@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import {
     SafeAreaView,
     TouchableOpacity,
@@ -8,31 +8,30 @@ import {
     ScrollView,
     Image,
     Dimensions,
+    Alert,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import { Theme } from "../Components/Theme";
 import { AppContext } from "../Components/globalVariables";
 import AntDesign from '@expo/vector-icons/AntDesign';
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "../../Firebase/Settings";
 
 
 const { width, height } = Dimensions.get("screen")
 
 export function Estate({ navigation, route }) {
-    const { userUID, createdEstates, docID } = useContext(AppContext);
+    const { userUID, setPreloader, setEstateContributions, estateContributions, estate } = useContext(AppContext);
 
-    const estate = createdEstates.find(item => item.docID == docID)
-
-
-    const communityName = "RockFace Estate";
     const options = [
-        { id: "0", title: "Residents", description: "View and contribute funds", icon: "users", screen: "Residents" },// view balance, payment plans, account details and pay in, only admin can pay out
-        { id: "1", title: "Contributions", description: "View and contribute funds", icon: "hand-holding-usd", screen: "Contributions" },// view balance, payment plans, account details and pay in, only admin can pay out
-        { id: "2", title: "Fuel Pool", description: "Track diesel/fuel purchases", icon: "gas-pump", screen: null },
-        { id: "3", title: "Electricity", description: "Monitor Power costs", icon: "bolt", screen: null },
-        { id: "4", title: "Security", description: "See guard schedules", icon: "shield-alt", screen: null },
-        { id: "5", title: "Voting & Polls", description: "Vote on resource use", icon: "poll", screen: null },
-        { id: "6", title: "Chat", description: "Discuss with members", icon: "comments", screen: null }, //only admin can drop updates, view all list of esate member have a bell icon in front of name for reminding them 
-        { id: "7", title: "Dashboard", description: "View community metrics", icon: "chart-pie", screen: null },
+        { id: "0", title: "Residents", description: "View and contribute funds", icon: "users", screen: "Residents", count: estate.users.length },// view balance, payment plans, account details and pay in, only admin can pay out
+        { id: "1", title: "Contributions", description: "View and contribute funds", icon: "hand-holding-usd", screen: "Contributions", count: estateContributions.length },// view balance, payment plans, account details and pay in, only admin can pay out
+        { id: "2", title: "Fuel Pool", description: "Track diesel/fuel purchases", icon: "gas-pump", screen: null, count: 0 },
+        { id: "3", title: "Electricity", description: "Monitor Power costs", icon: "bolt", screen: null, count: 0 },
+        { id: "4", title: "Security", description: "See guard schedules", icon: "shield-alt", screen: null, count: 0 },
+        { id: "5", title: "Voting & Polls", description: "Vote on resource use", icon: "poll", screen: null, count: 0 },
+        { id: "6", title: "Chat", description: "Discuss with members", icon: "comments", screen: null, count: 0 }, //only admin can drop updates, view all list of esate member have a bell icon in front of name for reminding them 
+        { id: "7", title: "Dashboard", description: "View community metrics", icon: "chart-pie", screen: null, count: 0 },
     ];
 
     const transactions = [
@@ -73,6 +72,24 @@ export function Estate({ navigation, route }) {
         },
     ];
 
+    useEffect(() => {
+        setPreloader(true);
+
+        const ref = collection(db, "contributions");
+        const q = query(ref, where("estateID", "==", estate?.docID));
+        onSnapshot(q, (users) => {
+            const qd = [];
+            users.forEach(item => {
+                qd.push({ ...item.data(), docID: item.id })
+            })
+            setPreloader(false);
+            setEstateContributions(qd);
+        }, (error) => {
+            setPreloader(false);
+            Alert.alert("Error", "Failed to fetch contributions. Please try again later.");
+        });
+    }, [estate?.docID]);
+
     const getStatusColor = (status) => {
         switch (status) {
             case "Completed":
@@ -102,7 +119,7 @@ export function Estate({ navigation, route }) {
             {/* Option Cards */}
             <View style={styles.optionContainer}>
                 {options.map((opt) => (
-                    <TouchableOpacity onPress={() => opt.screen && navigation.navigate(opt.screen, { docID })} style={styles.card} key={opt.id}>
+                    <TouchableOpacity onPress={() => opt.screen && navigation.navigate(opt.screen, { docID: estate?.docID })} style={styles.card} key={opt.id}>
                         <View style={styles.iconWrapper}>
                             <Icon name={opt.icon} size={24} color={Theme.colors.primary} />
                         </View>
@@ -110,6 +127,10 @@ export function Estate({ navigation, route }) {
                             <Text style={styles.cardTitle}>{opt.title}</Text>
                             <Text style={styles.cardDesc}>{opt.description}</Text>
                         </View>
+                        {/* Badge */}
+                        {opt.count > 0 && <View style={{ backgroundColor: Theme.colors.greenDark, borderRadius: 20, width: 25, height: 25, justifyContent: "center", alignItems: "center", position: "absolute", right: 0, top: 0 }}>
+                            <Text style={{ color: "white", fontFamily: Theme.fonts.text500 }}>{opt.count}</Text>
+                        </View>}
                     </TouchableOpacity>
                 ))}
             </View>

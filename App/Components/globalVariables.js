@@ -9,10 +9,12 @@ export function AppProvider({ children }) {
     image: null,
   });
   const [estates, setEstates] = useState([]);
+  const [estate, setEstate] = useState(null);
   const [estateGroups, setEstateGroups] = useState([]);
   const [createdEstates, setCreatedEstates] = useState([]);
   const [communities, setCommunities] = useState([]);
   const [docID, setDocID] = useState("");
+  const [estateContributions, setEstateContributions] = useState([]);
   const [userUID, setUserUID] = useState("Hp04HYLJPpUsE5fXQoiIg4o5mLz1");
   const [preloader, setPreloader] = useState(false);
   const [users, setUsers] = useState([]);
@@ -38,6 +40,10 @@ export function AppProvider({ children }) {
         setCreatedEstates,
         users,
         setUsers,
+        estate,
+        setEstate,
+        estateContributions,
+        setEstateContributions,
       }}
     >
       {children}

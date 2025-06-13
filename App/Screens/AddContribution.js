@@ -22,7 +22,7 @@ export function AddContribution({ navigation }) {
     const estate = createdEstates.find(item => item.docID == docID);
 
     const [conName, setConName] = useState("");
-    const [amount, setAmount] = useState("");
+    const [amount, setAmount] = useState(0);
     const [description, setDescription] = useState("");
     const [datereg, setDateReg] = useState("");
 
@@ -33,20 +33,24 @@ export function AddContribution({ navigation }) {
             return;
         }
 
+        console.log(amount);
+
+
         setPreloader(true)
         addDoc(collection(db, "contributions"), {
             name: conName,
             description,
             estateName: estate?.name,
             estateID: estate?.docID,
-            amount,
+            amount: Number(amount),
+            paidUsers: [],
             createdAt: Date.now(),
             createdBy: userUID,
         }).then(() => {
             ToastApp("Contribution created successfully.");
             setConName("");
             setDescription("");
-            setAmount("");
+            setAmount(0);
             setPreloader(false)
 
             navigation.goBack();
